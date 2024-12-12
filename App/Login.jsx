@@ -6,6 +6,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../helpers/theme';
+import { supabase } from '../lib/supabase';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -14,11 +15,31 @@ const Login = () => {
   const repasswordRef = useRef('');
   const [Loading, setLoading] = useState(false);
 
-  const onsubmit = () => {
+  const onsubmit = async() => {
     if (!emailRef.current || !passwordRef.current) {
       Alert.alert('Error', 'Please fill all the fields');
       return;
     }
+
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+
+    setLoading(true);
+
+    const{error} =await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    setLoading(false);
+
+    console.log('error',error);
+    if(error){
+      Alert.alert('Login', error.message);
+      return;
+    }
+
+
     // Further login logic
   };
 
