@@ -16,10 +16,10 @@ const SignUp = () => {
   const [Loading, setLoading] = useState(false);
 
   const onsubmit =async () => {
-   /*  if (!emailRef.current || !passwordRef.current) {
+    if (!emailRef.current || !passwordRef.current) {
       Alert.alert('Error', 'Please fill all the fields');
       return;
-    } */
+    }
 
     let name = UsernameRef.current.trim();
     let email = emailRef.current.trim();
@@ -30,6 +30,11 @@ const SignUp = () => {
     const {data:{session},error} = await supabase.auth.signUp({
       email,
       password,
+      options:{
+        data:{
+          name
+        }
+      }
     });
 
     setLoading(false);

@@ -7,12 +7,12 @@ import Button from '../components/Button';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../helpers/theme';
 import { supabase } from '../lib/supabase';
+import Layout from './_layout';
 
 const Login = () => {
   const navigation = useNavigation();
   const emailRef = useRef('');
   const passwordRef = useRef('');
-  const repasswordRef = useRef('');
   const [Loading, setLoading] = useState(false);
 
   const onsubmit = async() => {
@@ -23,25 +23,24 @@ const Login = () => {
 
     let email = emailRef.current.trim();
     let password = passwordRef.current.trim();
-
     setLoading(true);
 
-    const{error} =await supabase.auth.signInWithPassword({
+    const {error}= await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
+
     })
 
     setLoading(false);
 
-    console.log('error',error);
+    console.log('error', error);
+
     if(error){
-      Alert.alert('Login', error.message);
-      return;
+      Alert.alert('Login',error.message);
+    }else {
+      navigation.navigate('Layout');
     }
-
-
-    // Further login logic
-  };
+  }
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
@@ -67,7 +66,7 @@ const Login = () => {
             icon={<Icon name="lock" size={26} />}
             placeholder="Enter your Password"
             secureTextEntry
-            onChangeText={(value) => (repasswordRef.current = value)}
+            onChangeText={(value) => (passwordRef.current = value)}
           />
 
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
