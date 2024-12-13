@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { hp } from '../helpers/common'
+import { hp,wp } from '../helpers/common'
+import { theme } from '../helpers/theme'
+import Loading from './Loading'
 
 const Button = ({
   buttonStyle,
@@ -11,7 +13,7 @@ const Button = ({
   hasShadow=true,
 }) => {
   const shadowStyle = {
-    shadowColor: '#000',
+    shadowColor: theme.colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -19,6 +21,13 @@ const Button = ({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  }
+  if(loading){
+    return (
+      <View style={[styles.button , buttonStyle , {backgroundColor:'transparent'}]}>
+        <Loading/>
+      </View> 
+    )
   }
     
   return (
@@ -44,6 +53,6 @@ const styles = StyleSheet.create({
   text:{
     color: 'white',
     fontSize:20,
-    fontWeight: 'bold',
+    fontWeight: theme.fonts.bold,
   }
 })
