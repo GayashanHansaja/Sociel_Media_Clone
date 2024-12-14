@@ -8,7 +8,11 @@ import Main from './App/Main';
 import Layout from './App/_layout';
 import HomeIcon from './assets/icons/Home';
 import Home from './App/(Main)/Home';
-
+import Notification from './App/(Main)/notification';
+import NewPost from './App/(Main)/NewPost';
+import Profile from './App/(Main)/profile';
+import EditProfile from './App/(Main)/EditProfile';
+import { AuthProvider } from './context/AuthContext';
 
 
 const Stack = createNativeStackNavigator();
@@ -18,17 +22,24 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="welcome">
-        <Stack.Screen name="main" component={Main} />
-        <Stack.Screen name="welcome" component={Welcome} />
-        <Stack.Screen name="signup" component={SignUp} />
-        <Stack.Screen name="login" component={Login} />
-        <Stack.Screen name="Layout" component={Layout} />
-        <Stack.Screen name="Home" component={Home} />
+    <AuthProvider>
 
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="newPost">
+          <Stack.Screen name="main" component={Main} />
+          <Stack.Screen name="welcome" component={Welcome} />
+          <Stack.Screen name="signup" component={SignUp} />
+          <Stack.Screen name="login" component={Login} />
+          <Stack.Screen name="Layout" component={Layout} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="notification" component={Notification} />
+          <Stack.Screen name="newPost" component={NewPost} />
+          <Stack.Screen name="profile" component={Profile} />
+          <Stack.Screen name="editProfile" component={EditProfile} />
+
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
  

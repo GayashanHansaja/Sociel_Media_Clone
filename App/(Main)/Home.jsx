@@ -1,37 +1,73 @@
-import { SafeAreaView, StyleSheet, Text, View ,Button, Alert} from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View ,Button, Alert, Pressable} from 'react-native'
 import React from 'react'
-import { useAuth } from '../../context/AuthContext';
+import {useAuth} from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { theme } from '../../helpers/theme';
 import {wp,hp} from '../../helpers/common'
+import Icon from '../../assets/icons/Icon'
+import Avatar from '../../components/Avatar';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
   
-  const {user, setAuth} =useAuth;
+  const {user, setAuth} =useAuth();
+  const navigation = useNavigation();
 
-  console.log('user ',user)
+  console.log('user',user);
 
-  const onLogout = async () =>{
+ /*  const onLogout = async () =>{
     
     const {error} = await supabase.auth.signOut();
     if(error){
       Alert.alert('sign out',"Error signing out")
     }
-  }
+  } */
   return (
-    <SafeAreaView>
-      <View>
-        <Text> Home</Text>
-        <Button title='logout' onPress={onLogout} />
+    <SafeAreaView style={styles.SafeAreaView}>
+
+      <View style={styles.container}>
+
+        <View style={styles.header}>
+          <Text style={styles.title}>Beaver</Text>
+
+          <View style={styles.icon}>
+
+            <Pressable onPress={() => navigation.navigate('notification')}>
+              <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />  
+            </Pressable>
+
+            <Pressable onPress={() => navigation.navigate('newPost')}>
+              <Icon name='plus' size={hp(3.2)} strokeWidth={2.5} color={theme.colors.text} />  
+            </Pressable>
+
+            <Pressable onPress={() => navigation.navigate('profile')}>
+              <Avatar 
+                uri={user?.image}
+                size={hp(4.4)}
+                rounded={theme.radius.sm}
+                style={{borderWidth:1}}
+              />
+            </Pressable>
+            
+          </View>
+        </View>
       </View>
+     {/*  <Button title='logout' onPress={onLogout} /> */}
     </SafeAreaView>
   )
 };
 
 
+
+
 export default Home
 
 const styles = StyleSheet.create({
+  SafeAreaView: {
+    flex: 1,
+    paddingHorizontal: wp(2.5),
+  },
+
   container:{
     flex: 1
   },
