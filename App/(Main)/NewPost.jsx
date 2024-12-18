@@ -12,6 +12,8 @@ import Button from '../../components/Button'
 import * as ImagePicker from 'expo-image-picker'
 import { getSupabaseFileUrl } from '../../services/imageService'
 import { Video } from 'expo-av'
+import { Alert } from 'react-native'
+import { createUpdatePost } from '../../services/postService'
 
 
 
@@ -74,8 +76,33 @@ const NewPost = () => {
   }
 
   const onsubmit = async () => {
-
+    if(!bodyRef.current && !file){
+      Alert.alert('post','Please add some content or media to post');
+      return;
   }
+
+  let data ={
+    file,
+    body:bodyRef.current,
+    userId:user?.id,
+  }
+
+  setLoading(true);
+
+  let res =await createUpdatePost(data);
+
+  setLoading(false);
+
+  if(res.success){
+    setFile(null);
+    bodyRef.current = '';
+    editorRef.current?.setContentHTML('');
+    navigation.goBack();
+  }else{
+    Alert.alert('post',res.msg);
+  }
+  
+}
 console.log('file uri:',getFileUri(file));
   return (
     <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>

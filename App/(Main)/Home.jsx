@@ -13,7 +13,7 @@ const Home = () => {
   const {user, setAuth} =useAuth();
   const navigation = useNavigation();
 
-  console.log('user',user);
+  //console.log('user',user);
 
  /*  const onLogout = async () =>{
     
