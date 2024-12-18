@@ -5,7 +5,7 @@ import { theme } from '../helpers/theme'
 
 const TextEditor = ({
     editorRef,
-    onChange,
+    onChange
 }) => {
    
   return (
@@ -26,22 +26,34 @@ const TextEditor = ({
             actions.checkboxList,
             actions.undo,
             actions.redo,
+            actions.heading1,
+            actions.heading4,
 
-        ]}  
+        ]}
+        
+        iconMap={{
+        [actions.heading1]: ({tintColor}) =>
+            <Text style={{color:tintColor}}>H1</Text>,
+        [actions.heading2]: ({tintColor}) =>
+            <Text style={{color:tintColor}}>H2</Text>
+        }}
 
         style={styles.richBar}
         flatContainerStyle={styles.listStyle}
+        selectedIconTint={theme.colors.accent}
         editor={editorRef}
         disabled={false}
 
 
-        />
+      />
 
-        <RichEditor 
-            ref={editorRef}
-            containerStyle={styles.contentStyle}
-            placeholder={'Write something here...'}
-            onChange={onChange}/>
+      <RichEditor 
+        ref={editorRef}
+        containerStyle={styles.rich}
+        editorStyle={styles.contentStyle}
+        placeholder={'Write something here...'}
+        onChange={onChange}
+        />
     </View>
   )
 }
@@ -49,11 +61,37 @@ const TextEditor = ({
 export default TextEditor
 
 const styles = StyleSheet.create({
-   /*  richBar:{
+    richBar:{
         borderTopRightRadius:theme.radius.xl,
+        borderTopLeftRadius:theme.radius.xl,
+        backgroundColor: theme.colors.textLight,
+      },
         
-    listStyle:{
+    /* listStyle:{
         backgroundColor: 'white',
         borderCurve:'continuous',
-    } */
+    }, */
+
+    rich:{
+      minHeight:240,
+      flex:1,
+      borderWidth:1.5,
+      borderTopWidth:0,
+      borderBottomLeftRadius:theme.radius.xl,
+      borderBottomRightRadius:theme.radius.xl,
+      borderColor:theme.colors.textLight,
+      padding:5,
+
+    },
+
+    contentStyle:{
+      color:theme.colors.text,
+      placeholderColor:theme.colors.textLight,
+    },
+
+    flatStyle:{
+      paddingHorizontal:5,
+      gap:3,
+
+    }
 })

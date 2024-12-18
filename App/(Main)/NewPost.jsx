@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View ,ScrollView } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { theme } from '../../helpers/theme'
 import { hp,wp } from '../../helpers/common'
@@ -6,14 +6,77 @@ import TextEditor from '../../components/TextEditor'
 import Avatar from '../../components/Avatar'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
+/* import { TouchableOpacity } from 'react-native' */
+import Icon from '../../assets/icons/Icon'
+import Button from '../../components/Button'
+import * as ImagePicker from 'expo-image-picker'
+import { getSupabaseFileUrl } from '../../services/imageService'
+import { Video } from 'expo-av'
+
+
 
 const NewPost = () => {
   const {user} = useAuth();
   const bodyRef =useRef();
-  const editorRef =useRef();
+  const editorRef =useRef(null);
   const navigation = useNavigation();
   const [Loading,setLoading] = useState(false);
-  const [file ,setFile] = useState(file);
+  const [file ,setFile] = useState(file)
+
+  const onPick = async (isImage) => {
+
+    let mediaConfig = {
+      mediaTypes: ['images'/* , 'videos' */],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.7,
+    }
+    
+    if(!isImage){
+      mediaConfig={
+        mediaTypes: [/* 'images',  */'videos'],
+        allowsEditing:true,
+      }
+
+    }
+    let result = await ImagePicker.launchImageLibraryAsync(mediaConfig);
+    console.log('file:' ,result.assets[0]);
+    if(!result.canceled){
+      setFile(result.assets[0]);
+    }
+  }
+  const isLocalFile= file =>{
+    if(!file) return null;
+    if(typeof file == 'object') return true;
+      return false;
+    
+  }
+  const getFileType = file=>{
+    if(!file) return null;
+
+    if(isLocalFile(file)){
+      return file.type;
+    }
+
+    if(file.includes('postImage')){
+      return 'image';
+    }
+    return 'video';
+  }
+
+  const getFileUri= file =>{
+    if(!file) return null;
+    if(isLocalFile(file)){
+
+      return file.uri;
+    }
+    return getSupabaseFileUrl(file)?.uri;
+  }
+
+  const onsubmit = async () => {
+
+  }
+console.log('file uri:',getFileUri(file));
   return (
     <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
       <View style={styles.container}>
@@ -32,9 +95,56 @@ const NewPost = () => {
           </View>
 
           <View style={styles.textEditor}>
-              <TextEditor editorRef={editorRef} onChange={body => bodyRef.currunt= body}/>
+              <TextEditor editorRef={editorRef} onChange={body => bodyRef.current= body}/>
+          </View>
+          {
+            file && (
+              <View style={styles.file}>
+                {
+                  getFileType(file) == 'video'? (
+                    <Video 
+                      style={{flex:1}}
+                      source={{
+                        uri:getFileUri(file)
+                      }}
+                      useNativeControls
+                      resizeMode='cover'
+                      isLooping/>
+                  ):(
+                    <Image source ={{uri:getFileUri(file)}} resizeMode ='cover' style={{flex:1}}/>
+                  )
+                }
+
+                <Pressable style={styles.closeIcon} onPress={()=>setFile(null)}>
+                  <Icon name='delete' size={20} color='white' />
+                </Pressable>
+              </View>
+            )
+          }
+
+          <View style={styles.media}>
+            <Text style={styles.addImageText}>
+              Add your Post
+            </Text>
+            <View style={styles.mediaIcons}>
+              <TouchableOpacity onPress={() => onPick(true)}>
+                <Icon name="Image" size={30} color={theme.colors.accent} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => onPick(false)}>
+                <Icon name="Camera" size={30} color={theme.colors.accent} />
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
+        <View style={styles.buttonContainer}>
+        <Button
+          buttonStyle={{ height: hp(6.2) }}
+          title="Post"
+          loading={Loading}
+          hasShadow={false}
+          onPress={onsubmit}
+        />
+      </View>
       </View>
 
     </SafeAreaView>
@@ -48,6 +158,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: wp(1),
   },
+
   title: {
     // marginBottom: 10,
     fontSize: hp(2.5),
@@ -94,7 +205,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: theme. radius.xl,
     borderCurve: 'continuous',
-    borderColor: theme.colors.gray
+    borderColor: theme.colors.textLight,
+    marginBottom: 20
     },
     
   mediaIcons: {
@@ -128,6 +240,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    borderRadius: 50,
+    padding: 5,
+    backgroundColor: 'rgba(100,0,0,0.6)',
     // shadowColor: theme.colors.textLight,
     // shadowOffset: {width: 0, height: 3},
     // shadowOpacity: 0.6,

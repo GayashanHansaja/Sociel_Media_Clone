@@ -8,6 +8,8 @@ import { theme } from '../../helpers/theme'
 import { hp ,wp} from '../../helpers/common'
 import { supabase } from '../../lib/supabase'
 import Avatar from '../../components/Avatar'
+import { getUserDAta } from '../../services/userServices'
+
 const Profile = () => {
     const {user ,setAuth}=useAuth();
     /* console.log('AuthContext value:', { user, setAuth }) */
@@ -43,7 +45,7 @@ const Profile = () => {
     }
 
   return (
-    <SafeAreaView style={styles.SafeAreaView} bg='white' flex={1}>
+    <SafeAreaView style={styles.SafeAreaView} flex={1}>
         <View>
             <TouchableOpacity style={styles.logoutButton}onPress={handleLogout}>
                 <Icon name='logout' size={24} color='red' />
@@ -73,18 +75,18 @@ const Profile = () => {
                     <Text style={styles.infoText}>{user && user.address}</Text>
                 </View>
 
-                {/* email,phone ,bio */}
+                {/* email,phoneNumber ,bio */}
                 <View style={{gap:10}}>
                     <View style={styles.info}>
                         <Icon name='mail' size={20} color={theme.colors.text} />
                         <Text style={styles.infoText}>{user && user.email}</Text>
                     </View>
                     {
-                        user && user.phone &&(
+                        user && user.phoneNumber &&(
 
                             <View style={styles.info}>
-                                <Icon name='call' size={20} color={theme.colors.text} />
-                                <Text style={styles.infoText}>{user && user.phone}</Text>
+                                <Icon name='Call' size={20} color={theme.colors.text} />
+                                <Text style={styles.infoText}>{user && user.phoneNumber}</Text>
                             </View>
                         )
                     }
@@ -187,9 +189,10 @@ infoText: {
 logoutButton: {
     position: 'absolute',
     right: 0,
-    padding: 5,
-    borderRadius: theme. radius.sm,
-    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 50,
+    backgroundColor: 'lightgrey',
+    marginTop: hp(1),
     
 },
     

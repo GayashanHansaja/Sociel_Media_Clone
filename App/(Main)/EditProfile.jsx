@@ -2,67 +2,111 @@ import { SafeAreaView, StyleSheet, Text, View ,Pressable ,ScrollView,Alert } fro
 import React from 'react'
 import { theme } from '../../helpers/theme'
 import { wp, hp } from '../../helpers/common'
-import { getUserImageSource } from '../../services/imageService'
+import { getUserImageSource, uploadFile } from '../../services/imageService'
 import Icon from '../../assets/icons/Icon'
 import {useAuth} from '../../context/AuthContext';
 import { Image } from 'expo-image'
 import Input from '../../components/Input'
 import { useEffect, useState } from 'react';
 import Button from '../../components/Button';
-import Loading from '../../components/Loading'
-
+import Loading from '../../components/Loading';
+import {updateUser} from '../../services/userServices';
+import { useNavigation } from '@react-navigation/native'
+import * as ImagePicker from 'expo-image-picker';
 
 
 const EditProfile = () => {
 
-  const {user:curruntUser }=useAuth();
+  const {user:currentUser,setUserData}=useAuth();
   const [Loading,setLoading] = useState(false);
+  const navigation = useNavigation();
 
   const [user,setUser] = useState({
     name:'',
     bio:'',
     image:null,
-    phone:'',
+    phoneNumber:'',
     address:'',
   });
 
-  useEffect(()=>{
-    if(curruntUser){
+   useEffect(()=>{
+    if(currentUser){
       setUser({
-        name:curruntUser.name || '',
-        bio:curruntUser.bio || '',
-        image:curruntUser.image || null,
-        phone:curruntUser.phone || '',
-        address:curruntUser.address || '',
+        name:currentUser.name || '',
+        bio:currentUser.bio || '',
+        image:currentUser.image || null,
+        phoneNumber:currentUser.phoneNumber || '',
+        address:currentUser.address || '',
       });
     }
-  },[curruntUser]);
-  const onPickImage = async () => {}
+  },[currentUser]);
+  const onPickImage = async () => {
+      // No permissions request is necessary for launching the image library
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images', 'videos'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.7,
+      })
 
-  const onsubmit = async () => {
-    let userData={...user};
-    let {name ,phoneNumber,address,bio,image}=userData;
-    if(!name || !phoneNumber || !address || !bio){
-      Alert.alert('Error','Please fill all the fields');
-      return;
-    }
-
-    setLoading(true);
+      if (!result.canceled){
+        setUser({...user, image:result.assets[0]});
+      }
   }
 
- /*  let imageSource= getUserImageSource(user.image); */
+  const onsubmit = async () => {
+
+    let userData ={ ...user};
+    const { name, phoneNumber, address, bio ,image} = userData;
+  
+    if (!name || !phoneNumber || !address || !bio || !image) {
+      Alert.alert('Error', 'Please fill all the fields');
+      return;
+    }
+  
+    setLoading(true);
+
+    if(typeof image == 'object'){
+      let imageRes =await uploadFile('profile', image?.uri ,true);
+      if(imageRes.success){
+        userData.image = imageRes.data;}
+      else userData.image = null;
+    }
+
+    const res =await updateUser(currentUser?.id, userData);
+
+    setLoading(false);
+
+    if (res.success){
+      setUserData({...currentUser,...userData});
+      navigation.goBack();
+    }
+    
+    console.log('update user result',res);
+    setTimeout(() => {
+      Alert.alert('Success', 'Profile updated successfully!');
+      
+    }, 1000); // Simulates server response delay
+  };
+
+  let imageSource =user.image && typeof user.image == 'object'? user.image.uri :getUserImageSource(user?.image);
+  console.log("User object:", user);
+  console.log("Image source:", imageSource);
+
   return (
-    <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
+    <SafeAreaView style={styles.SafeAreaView}>
       <View style={styles.container}>
         <ScrollView style={{flex: 1}}>
 
           {/* form */}
           <View style={styles.form}>
-            {/* <View style={styles.avatarContainer}>
-              <Image source={imageSource} style={styles.avatar} />
-              <Pressable style={styles.cameraIcon} onPress={onPickImage}><Icon name='camera' size={20} strokeWidth={2.5}/></Pressable>
-            </View> */}
-            <Text style={{fontSize:hp(1.5), color :theme.colors.text}} >
+            <View style={styles.avatarContainer}>
+              <Image  source={imageSource /* || require("../../assets/defaultUser.png")  */} style={styles.avatar}/>
+               
+              <Pressable style={styles.cameraIcon} onPress={onPickImage}><Icon name='Camera' size={20} strokeWidth={2.5}/></Pressable>
+            </View>
+
+           <Text style={{fontSize:hp(1.5), color :theme.colors.text}} >
               Plase fill your profile details
             </Text>
             <Input
@@ -73,9 +117,9 @@ const EditProfile = () => {
             />
             <Input
               icon={<Icon name='Call'/>}
-              placeholder='Enter your phone number'
-              value={user.phone}
-              onChangeText={value=>setUser({...user,phone:value})}
+              placeholder='Enter your phoneNumber number'
+              value={user.phoneNumber}
+              onChangeText={value=>setUser({...user,phoneNumber:value})}
             />
             <Input
               icon={<Icon name='location'/>}
@@ -88,11 +132,11 @@ const EditProfile = () => {
               placeholder='Enter your bio'
               value={user.bio}
               multiline={true}
-              Style={styles.bio}
+              containerStyle={styles.bio}
               onChangeText={value=>setUser({...user,bio:value})}
             />
 
-            <Button title='Update' loading={Loading} onPress={onsubmit} />
+            <Button title='Update' loading={Loading} onPress={onsubmit}/>
           </View>
         </ScrollView>
       </View>
