@@ -4,7 +4,7 @@ import { hp, wp } from '../helpers/common'
 import { theme } from '../helpers/theme'
 const Input = (props) => {
   return (
-    <View style={[styles.container, props.containerStyle && props.containerStyles]}>
+    <View style={[styles.container, props.containerStyle && props.containerStyle]}>
       {
         props.icon && props.icon
       }
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         
         justifyContent  :'center',
-        width: wp(90),
         height: hp(7.2),
         alignItems: 'center',
         borderWidth: 0.5,

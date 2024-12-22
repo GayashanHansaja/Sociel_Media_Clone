@@ -7,18 +7,19 @@ import { getUserDAta } from '../services/userServices';
 
 const Stack = createNativeStackNavigator();
 
-const MainLayout = () => {
+const Layout = () => {
   const { setAuth,setUserData } = useAuth();
   const navigation=useNavigation();
 
   useEffect(() => {
     
     supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', session?.user.id);
+      /* console.log('Auth state changed:', session?.user.id); */
 
       if (session) {
         setAuth(session?.user);
-        updateUserData(session?.user)
+        updateUserData(session?.user,session?.user?.email )
+
         navigation.navigate('Home');
       }else{
         setAuth(null)
@@ -30,9 +31,9 @@ const MainLayout = () => {
 
   
   }, []);
-  const updateUserData=async (user)=>{
+  const updateUserData=async (user,email)=>{
     let res=await getUserDAta(user?.id);
-    if (res.success) setUserData(res.data)
+    if (res.success) setUserData({...res.data, email})
   }
   /* return (
     <Stack.Navigator
@@ -45,12 +46,12 @@ const MainLayout = () => {
   ); */
 };
 
-const Layout = () => {
+/* const Layout = () => {
   return (
     <AuthProvider>
       <MainLayout />
     </AuthProvider>
   );
-};
+}; */
 
 export default Layout;
