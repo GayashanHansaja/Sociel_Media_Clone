@@ -32,3 +32,28 @@ import { uploadFile } from "./imageService";
         
     }
   }
+
+  export const fetchPosts = async(limit=10)=>{
+
+    try {
+        const {data, error} = await supabase
+        .from('posts')
+
+        .select(`*,
+            user:users(id , name, image)`)
+        .order('created_at', {ascending:false})
+        .limit(limit);
+
+        if(error){
+            console.log('Error fetch post:', error);
+            return {success:false, msg: 'Post fetching failed'};
+        }
+
+        return {success:true, data:data};
+       
+    } catch (error) {
+        console.log('Error fetch post:', error);
+        return {success:false, msg: 'Post creation failed'};
+        
+    }
+  }

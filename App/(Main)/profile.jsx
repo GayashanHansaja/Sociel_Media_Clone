@@ -43,6 +43,8 @@ const Profile = () => {
             }
         ])
     }
+    
+
 
   return (
     <SafeAreaView style={styles.SafeAreaView} flex={1}>
@@ -62,6 +64,7 @@ const Profile = () => {
                     size={hp(12)}
                     rounded={theme.radius.xxl}
                     />
+    
 
                     <Pressable style={styles.editIcon} onPress={()=>navigation.navigate('editProfile')}>
                         <Icon name='edit' size={20} color={theme.colors.text} />

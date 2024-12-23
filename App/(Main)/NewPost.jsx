@@ -14,6 +14,7 @@ import { getSupabaseFileUrl } from '../../services/imageService'
 import { Video } from 'expo-av'
 import { Alert } from 'react-native'
 import { createUpdatePost } from '../../services/postService'
+import { BottomSheet } from '@rneui/themed'
 
 
 
@@ -106,7 +107,7 @@ const NewPost = () => {
 console.log('file uri:',getFileUri(file));
   return (
     <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
-      <View style={styles.container}>
+      {/* <View style={styles.container}> */}
         <ScrollView contentContainerStyle={{gap:20}}>
           {/* avatar */}
           <View style={styles.header}>
@@ -151,7 +152,7 @@ console.log('file uri:',getFileUri(file));
 
           <View style={styles.media}>
             <Text style={styles.addImageText}>
-              Add your Post
+              Add your Postt
             </Text>
             <View style={styles.mediaIcons}>
               <TouchableOpacity onPress={() => onPick(true)}>
@@ -172,7 +173,7 @@ console.log('file uri:',getFileUri(file));
           onPress={onsubmit}
         />
       </View>
-      </View>
+      {/* </View> */}
 
     </SafeAreaView>
   )
@@ -184,6 +185,12 @@ const styles = StyleSheet.create({
   SafeAreaView: {
     flex: 1,
     paddingHorizontal: wp(1),
+  },
+  container:{
+    flex: 1,
+    marginBottom: 30,
+    paddingHorizontal: wp(4),
+    gap: 20
   },
 
   title: {
@@ -198,6 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginTop: hp(1.5),
     },
   username: {
     fontSize: hp(2.2),

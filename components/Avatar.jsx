@@ -12,6 +12,8 @@ const Avatar = ({
     rounded=theme.radius.md,
     style={},
 }) => {
+    console.log('Avatar URI:', uri);
+
   return (
 
       <Image
@@ -19,7 +21,9 @@ const Avatar = ({
         source={getUserImageSource(uri)}
         transition={100}
         />
+        
   )
+  
 }
 
 export default Avatar

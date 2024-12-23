@@ -1,5 +1,5 @@
-import { SafeAreaView, StyleSheet, Text, View ,Button, Alert, Pressable} from 'react-native'
-import React from 'react'
+import { SafeAreaView, StyleSheet, Text, View ,Button, Alert, Pressable, FlatList} from 'react-native'
+import React, { useEffect, useState } from 'react'
 import {useAuth} from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { theme } from '../../helpers/theme';
@@ -7,11 +7,50 @@ import {wp,hp} from '../../helpers/common'
 import Icon from '../../assets/icons/Icon'
 import Avatar from '../../components/Avatar';
 import { useNavigation } from '@react-navigation/native';
+import { fetchPosts } from '../../services/postService';
+import PostCard from '../../components/PostCard';
+import Loading from '../../components/Loading';
+import { getUserDAta } from '../../services/userServices';
 
+var limit=0;
 const Home = () => {
   
   const {user, setAuth} =useAuth();
   const navigation = useNavigation();
+
+  const [posts, setPosts] = useState([]);
+
+  /* const handlePostEvent = async (payload) => {
+    if(payload.eventType === 'INSERT' && payload?.new?.id) 
+      {let newPost = {...payload.new};
+    let res =await getUserDAta(newPost.userId);
+    newPost.user = res.success? res.data :{};
+    setPosts(prevPosts =>[newPost,...prevPosts]);
+}
+  } */
+  useEffect(() => {
+
+   /*  let postChannel=supabase
+    .channel('posts')
+    .on ('postgress_changes',{event:'*',schema:'public',table:'posts'},handlePostEvent)
+    getPosts();
+return ()=> {
+  supabase.removeChannel(postChannel);
+}
+ */
+
+  },[])
+
+  const getPosts = async () => {
+    limit+=10;
+    let res=await fetchPosts(limit);
+
+    if(res.success){
+      setPosts(res.data);
+    }
+
+
+  }
 
   //console.log('user',user);
 
@@ -50,7 +89,25 @@ const Home = () => {
             </Pressable>
             
           </View>
+        
         </View>
+          <FlatList 
+            data={posts}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listStyle}
+            keyExtractor={item=> item.id.toString()}
+            renderItem={({item})=><PostCard 
+              item={item}
+              currentUser={user}
+              navigate={navigation.navigate}  
+              />
+              } 
+              ListFooterComponent={(
+                <View style={{margineVertical: posts.length==0? 200:30}}>
+                  <Loading/>
+                  </View>
+              )}  
+          />
       </View>
      {/*  <Button title='logout' onPress={onLogout} /> */}
     </SafeAreaView>
@@ -84,7 +141,8 @@ flexDirection: 'row',
 alignItens: 'center',
 justifyContent: 'space-between',
 marginBottom: 10,
-marginHorizontal: wp(4)
+marginHorizontal: wp(4),
+marginTop: hp(1.3)
 },
 
 title: {
