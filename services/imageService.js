@@ -15,7 +15,7 @@ export const getUserImageSource= imagePath =>{
 
 export const getSupabaseFileUrl= filePath =>{
     if(filePath){
-        return{uri:`${supabaseUrl} /storage/v1/object/public/uploads/${filePath}`}
+        return{uri:`${supabaseUrl}/storage/v1/object/public/uploads/${filePath}`}
     }else{
         console.log('No file path')
     }
@@ -56,5 +56,5 @@ export const uploadFile =async (folderName ,fileUri ,isImage =true) =>{
 }
 
 export const getFilePath =(folderName, isImage) =>{
-    return `/${folderName}/${(new Date()).getTime()}${isImage? '.png':'.mp4'}`;
+    return `/${folderName}/${(new Date()).getTime()}${isImage? '.jpg':'.mp4'}`;
 }

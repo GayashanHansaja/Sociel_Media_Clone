@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
+import { SafeAreaView,Alert,StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { theme } from '../../helpers/theme'
 import { hp,wp } from '../../helpers/common'
@@ -12,8 +12,8 @@ import Button from '../../components/Button'
 import * as ImagePicker from 'expo-image-picker'
 import { getSupabaseFileUrl } from '../../services/imageService'
 import { Video } from 'expo-av'
-import { Alert } from 'react-native'
 import { createUpdatePost } from '../../services/postService'
+
 
 
 
@@ -79,34 +79,40 @@ const NewPost = () => {
     if(!bodyRef.current && !file){
       Alert.alert('post','Please add some content or media to post');
       return;
-  }
+    }
 
-  let data ={
+    let data ={
     file,
     body:bodyRef.current,
     userId:user?.id,
-  }
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  let res =await createUpdatePost(data);
+    let res =await createUpdatePost(data);
 
-  setLoading(false);
+    setLoading(false);
 
-  if(res.success){
-    setFile(null);
-    bodyRef.current = '';
-    editorRef.current?.setContentHTML('');
-    navigation.goBack();
-  }else{
-    Alert.alert('post',res.msg);
-  }
+    if(res.success){
+      setFile(null);
+      bodyRef.current = '';
+      editorRef.current?.setContentHTML('');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+
+    }else{
+      Alert.alert('post',res.msg);
+    }
   
 }
 console.log('file uri:',getFileUri(file));
+console.log('Navigation:', navigation);
+
   return (
     <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
-      <View style={styles.container}>
+      {/* <View style={styles.container}> */}
         <ScrollView contentContainerStyle={{gap:20}}>
           {/* avatar */}
           <View style={styles.header}>
@@ -172,7 +178,7 @@ console.log('file uri:',getFileUri(file));
           onPress={onsubmit}
         />
       </View>
-      </View>
+      {/* </View> */}
 
     </SafeAreaView>
   )
@@ -184,6 +190,12 @@ const styles = StyleSheet.create({
   SafeAreaView: {
     flex: 1,
     paddingHorizontal: wp(1),
+  },
+  container:{
+    flex: 1,
+    marginBottom: 30,
+    paddingHorizontal: wp(4),
+    gap: 20
   },
 
   title: {
@@ -198,6 +210,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginTop: hp(1.5),
     },
   username: {
     fontSize: hp(2.2),

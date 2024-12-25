@@ -13,6 +13,13 @@ import NewPost from './App/(Main)/NewPost';
 import Profile from './App/(Main)/profile';
 import EditProfile from './App/(Main)/EditProfile';
 import { AuthProvider } from './context/AuthContext';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Warning: TNodeChildrenRenderer: Support for defaultProps will be removed',
+  'Warning: TRenderEngineProvider: Support for defaultProps will be removed',
+  'Warning: MemoizedTNodeRenderer: Support for defaultProps will be removed',
+]);
 
 
 const Stack = createNativeStackNavigator();
