@@ -20,29 +20,31 @@ const Home = () => {
 
   const [posts, setPosts] = useState([]);
 
-  /* const handlePostEvent = async (payload) => {
+  const handlePostEvent = async (payload) => {
     if(payload.eventType === 'INSERT' && payload?.new?.id) 
       {let newPost = {...payload.new};
     let res =await getUserDAta(newPost.userId);
     newPost.user = res.success? res.data :{};
     setPosts(prevPosts =>[newPost,...prevPosts]);
 }
-  } */
+  }
   useEffect(() => {
 
-   /*  let postChannel=supabase
+    let postChannel=supabase
     .channel('posts')
     .on ('postgress_changes',{event:'*',schema:'public',table:'posts'},handlePostEvent)
-    getPosts();
+    .subscribe();
+    /* getPosts(); */
+  
 return ()=> {
   supabase.removeChannel(postChannel);
 }
- */
+
 
   },[])
 
   const getPosts = async () => {
-    limit+=10;
+    limit+=5;
     let res=await fetchPosts(limit);
 
     if(res.success){
@@ -99,9 +101,18 @@ return ()=> {
             renderItem={({item})=><PostCard 
               item={item}
               currentUser={user}
-              navigate={navigation.navigate}  
+              navigation={navigation}  
               />
               } 
+
+              onEndReached={()=>{
+
+                getPosts()
+
+                console.log('end reached')
+              }
+              }
+              onEndReachedThreshold={0}
               ListFooterComponent={(
                 <View style={{margineVertical: posts.length==0? 200:30}}>
                   <Loading/>

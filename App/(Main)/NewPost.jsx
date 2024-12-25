@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
+import { SafeAreaView,Alert,StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { theme } from '../../helpers/theme'
 import { hp,wp } from '../../helpers/common'
@@ -12,9 +12,8 @@ import Button from '../../components/Button'
 import * as ImagePicker from 'expo-image-picker'
 import { getSupabaseFileUrl } from '../../services/imageService'
 import { Video } from 'expo-av'
-import { Alert } from 'react-native'
 import { createUpdatePost } from '../../services/postService'
-import { BottomSheet } from '@rneui/themed'
+
 
 
 
@@ -80,31 +79,37 @@ const NewPost = () => {
     if(!bodyRef.current && !file){
       Alert.alert('post','Please add some content or media to post');
       return;
-  }
+    }
 
-  let data ={
+    let data ={
     file,
     body:bodyRef.current,
     userId:user?.id,
-  }
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  let res =await createUpdatePost(data);
+    let res =await createUpdatePost(data);
 
-  setLoading(false);
+    setLoading(false);
 
-  if(res.success){
-    setFile(null);
-    bodyRef.current = '';
-    editorRef.current?.setContentHTML('');
-    navigation.goBack();
-  }else{
-    Alert.alert('post',res.msg);
-  }
+    if(res.success){
+      setFile(null);
+      bodyRef.current = '';
+      editorRef.current?.setContentHTML('');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+
+    }else{
+      Alert.alert('post',res.msg);
+    }
   
 }
 console.log('file uri:',getFileUri(file));
+console.log('Navigation:', navigation);
+
   return (
     <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
       {/* <View style={styles.container}> */}
@@ -152,7 +157,7 @@ console.log('file uri:',getFileUri(file));
 
           <View style={styles.media}>
             <Text style={styles.addImageText}>
-              Add your Postt
+              Add your Post
             </Text>
             <View style={styles.mediaIcons}>
               <TouchableOpacity onPress={() => onPick(true)}>

@@ -6,10 +6,10 @@ import Avatar from './Avatar'
 import moment from 'moment'
 import Icon from '../assets/icons/Icon'
 import RenderHtml from 'react-native-render-html'
-import { color } from '@rneui/themed/dist/config'
 import { Image } from 'expo-image'
 import { getSupabaseFileUrl } from '../services/imageService'
-
+import { createPostLike, removePostLikes } from '../services/postService'
+import { useState,useEffect } from 'react'
 const textStyle ={
     color:theme.colors.textDark,
     fontSize:hp(1.7),
@@ -42,10 +42,45 @@ const PostCard =({
         elevation:1
 
     }
+    const [likes,setLikes]=useState([])
+    useEffect(() => {
+        setLikes(item?.postLikes)
+    }, [])
     const openPostDetails = () => {}
-    const liked=true;
-    const likes=[]
 
+    const onLike= async ()=>{
+
+        if(liked){
+            //remove like
+            let updatedLikes=likes.filter(like=>like.userId !=currentUser?.id)
+
+            setLikes([...updatedLikes])
+            let res= await removePostLikes(item?.id, currentUser?.id);
+            console.log('removed',res);
+            if(!res.success){
+                Alert.alert('post','something went wrong');
+            }
+
+        }else {
+            //add like
+            let data={
+                userId:currentUser?.id,
+    
+                postId:item?.id
+            }
+            setLikes([...likes,data])
+            let res= await createPostLike(data);
+            console.log('added:',res);
+            if(!res.success){
+                Alert.alert('Like failed','something went wrong');
+            }
+
+        }
+
+    }
+    const liked=likes.filter(like=>like.userId==currentUser?.id)[0]? true:false;
+    
+   
     const createdAt= moment(item?.created_ad).format('MMM DD');
   return (
     <View style={[styles.container, hasShadow && shadowStyles]}>
@@ -111,9 +146,9 @@ const PostCard =({
         {/* footer */}
         <View style={styles.footer}>
             <View style={styles.actions}>
-                <TouchableOpacity style={styles.footerButton}>
+                <TouchableOpacity onPress={onLike}style={styles.footerButton}>
                     <Icon name='heart' size={hp(2.5)} strokeWidth={1.9} fill={liked? 'red' : 'transparent'}  color={liked? 'red' : theme.colors.textDark} />
-                    <Text style={styles.count}>{/* {likes?.length} */}1</Text>
+                    <Text style={styles.count}>{likes?.length}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerButton}>
                     <Icon name='comment' size={hp(2.5)} strokeWidth={1.9} color={theme.colors.text} />
