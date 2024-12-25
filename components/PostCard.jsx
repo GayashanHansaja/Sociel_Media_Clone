@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View ,TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View ,TouchableOpacity, Share} from 'react-native'
 import React from 'react'
 import { theme } from '../helpers/theme'
-import { hp, wp  } from '../helpers/common'
+import { hp, stripHtmlTags, wp  } from '../helpers/common'
 import Avatar from './Avatar'
 import moment from 'moment'
 import Icon from '../assets/icons/Icon'
 import RenderHtml from 'react-native-render-html'
 import { Image } from 'expo-image'
-import { getSupabaseFileUrl } from '../services/imageService'
+import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
 import { createPostLike, removePostLikes } from '../services/postService'
 import { useState,useEffect } from 'react'
+import Loading from './Loading'
 const textStyle ={
     color:theme.colors.textDark,
     fontSize:hp(1.7),
@@ -42,7 +43,10 @@ const PostCard =({
         elevation:1
 
     }
+
+    //like things
     const [likes,setLikes]=useState([])
+    const [loading,setLoading]=useState(false)
     useEffect(() => {
         setLikes(item?.postLikes)
     }, [])
@@ -80,7 +84,45 @@ const PostCard =({
     }
     const liked=likes.filter(like=>like.userId==currentUser?.id)[0]? true:false;
     
-   
+   //share things
+   const onShare =async ()=>{
+    let content= {message: stripHtmlTags(item?.body)}
+    if(item?.file){
+        let url=await downloadFile(getSupabaseFileUrl(item?.file).uri);
+        setLoading(false);
+        content.url=url
+    }
+    Share.share(content);
+   }
+/*     const onShare = async () => {
+        try {
+          let content = { message: stripHtmlTags(item?.body) }; // Initialize the share content with the post body.
+      
+          // Check if there is an image or video file to share.
+          if (item?.file) {
+            const fileUrl = getSupabaseFileUrl(item?.file).uri; // Get the full file URL.
+            const localFileUri = await downloadFile(fileUrl); // Download the file locally.
+      
+            if (localFileUri) {
+              content.url = localFileUri; // Add the local file URI to the share content.
+            } else {
+              console.warn('Failed to download the file.');
+            }
+          }
+      
+          // Share the content.
+          const result = await Share.share(content);
+      
+          if (result.action === Share.sharedAction) {
+            console.log('Content shared successfully.');
+          } else if (result.action === Share.dismissedAction) {
+            console.log('Share dismissed.');
+          }
+        } catch (error) {
+          console.error('Error sharing post:', error);
+        }
+      }; */
+      
     const createdAt= moment(item?.created_ad).format('MMM DD');
   return (
     <View style={[styles.container, hasShadow && shadowStyles]}>
@@ -155,9 +197,18 @@ const PostCard =({
                     <Text style={styles.count}>{item?.comments_count}</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.footerButton}>
+            <View>
+                {
+                    loading ?(
+                        <Loading size='small'/>
+                    ):(
+            <TouchableOpacity onPress={onShare} style={styles.footerButton}>
                 <Icon name='share' size={hp(2.5)} strokeWidth={1.9} color={theme.colors.text} />
             </TouchableOpacity>
+
+                    )
+                }
+            </View>
             </View>
     </View>
   )
