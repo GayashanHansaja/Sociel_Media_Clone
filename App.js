@@ -12,6 +12,7 @@ import Notification from './App/(Main)/notification';
 import NewPost from './App/(Main)/NewPost';
 import Profile from './App/(Main)/profile';
 import EditProfile from './App/(Main)/EditProfile';
+import PostDetails from './App/(Main)/PostDetails';
 import { AuthProvider } from './context/AuthContext';
 import { LogBox } from 'react-native';
 
@@ -43,6 +44,12 @@ export default function App() {
           <Stack.Screen name="newPost" component={NewPost} />
           <Stack.Screen name="profile" component={Profile} />
           <Stack.Screen name="editProfile" component={EditProfile} />
+          <Stack.Screen name="PostDetails" component={PostDetails}
+           
+           options={{
+             presentation: 'modal', // Makes it a modal
+             headerShown: true,    // Optional: hide the header if needed
+           }} />
 
         </Stack.Navigator>
       </NavigationContainer>
