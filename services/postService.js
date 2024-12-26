@@ -43,7 +43,8 @@ import { uploadFile } from "./imageService";
 
         .select(`*,
             user:users(id , name, image),
-            postLikes(*)`)
+            postLikes(*),
+            comments(count)`)
         .order('created_at', {ascending:false})
         .limit(limit);
 
@@ -110,4 +111,55 @@ import { uploadFile } from "./imageService";
     }
   }
 
-  
+  export const fetchPostsDetails = async(postId)=>{
+
+    try {
+        const {data, error} = await supabase
+        .from('posts')
+
+        .select(`*,
+            user:users(id , name, image),
+            postLikes(*),
+            comments(*, user:users(id, name, image))`)
+        .eq('id', postId)
+        .order("created_at",{ascending:false ,foriegnTable:'comments'})
+        .single();
+
+        if(error){
+            console.log('Error fetch postdetail :', error);
+            return {success:false, msg: 'Postdetails fetching failed'};
+        }
+
+        return {success:true, data:data};
+       
+    } catch (error) {
+        console.log('Error fetch post:', error);
+        return {success:false, msg: 'Post creation failed'};
+        
+    }
+  }
+
+  export const createComment = async(comment)=>{
+
+    try {
+        const {data, error} = await supabase
+        .from('comments')
+        .insert(comment)
+
+        .select()
+        .single()
+        
+
+        if(error){
+            console.log('Error insert comment:', error);
+            return {success:false, msg: 'comment failed'};
+        }
+
+        return {success:true, data:data};
+       
+    } catch (error) {
+        console.log('like comment:', error);
+        return {success:false, msg: 'comment failed'};
+        
+    }
+  }

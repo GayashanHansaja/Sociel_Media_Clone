@@ -11,6 +11,8 @@ import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
 import { createPostLike, removePostLikes } from '../services/postService'
 import { useState,useEffect } from 'react'
 import Loading from './Loading'
+import { useNavigation } from '@react-navigation/native'
+
 const textStyle ={
     color:theme.colors.textDark,
     fontSize:hp(1.7),
@@ -32,6 +34,7 @@ const PostCard =({
     currentUser,
     navigate,
     hasShadow=true,
+    showMoreIcon=true
 })=>{
     const shadowStyles= {
         shadowOffset: {
@@ -43,6 +46,7 @@ const PostCard =({
         elevation:1
 
     }
+    const navigation=useNavigation();
 
     //like things
     const [likes,setLikes]=useState([])
@@ -50,7 +54,10 @@ const PostCard =({
     useEffect(() => {
         setLikes(item?.postLikes)
     }, [])
-    const openPostDetails = () => {}
+    const openPostDetails = () => {
+        if(!showMoreIcon) return null;
+        navigation.navigate('PostDetails', { postId: item?.id });
+    }
 
     const onLike= async ()=>{
 
@@ -94,6 +101,7 @@ const PostCard =({
     }
     Share.share(content);
    }
+
 /*     const onShare = async () => {
         try {
           let content = { message: stripHtmlTags(item?.body) }; // Initialize the share content with the post body.
@@ -140,9 +148,16 @@ const PostCard =({
 
             </View>
         </View>
+        <View>
+            {
+                showMoreIcon && (
+
             <TouchableOpacity onPress={openPostDetails}>
                 <Icon name="menu" size={hp(3.4)} strokeWidth={3} color={theme.colors.text} />
             </TouchableOpacity>
+                )
+            }
+            </View>
       </View>
       {/* body of post */}
 
@@ -192,9 +207,9 @@ const PostCard =({
                     <Icon name='heart' size={hp(2.5)} strokeWidth={1.9} fill={liked? 'red' : 'transparent'}  color={liked? 'red' : theme.colors.textDark} />
                     <Text style={styles.count}>{likes?.length}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerButton}>
+                <TouchableOpacity onPress={openPostDetails}style={styles.footerButton}>
                     <Icon name='comment' size={hp(2.5)} strokeWidth={1.9} color={theme.colors.text} />
-                    <Text style={styles.count}>{item?.comments_count}</Text>
+                    <Text style={styles.count}>{item?.comments[0]?.count}</Text>
                 </TouchableOpacity>
             </View>
             <View>
