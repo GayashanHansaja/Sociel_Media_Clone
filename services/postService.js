@@ -35,25 +35,47 @@ import { uploadFile } from "./imageService";
     }
   }
 
-  export const fetchPosts = async(limit=4)=>{
+  export const fetchPosts = async(limit=4,userId)=>{
 
     try {
-        const {data, error} = await supabase
-        .from('posts')
+        if(userId){
 
-        .select(`*,
-            user:users(id , name, image),
-            postLikes(*),
-            comments(count)`)
-        .order('created_at', {ascending:false})
-        .limit(limit);
-
-        if(error){
-            console.log('Error fetch post:', error);
-            return {success:false, msg: 'Post fetching failed'};
+            const {data, error} = await supabase
+            .from('posts')
+    
+            .select(`*,
+                user:users(id , name, image),
+                postLikes(*),
+                comments(count)`)
+            .order('created_at', {ascending:false})
+            .eq('userId', userId)
+            .limit(limit);
+    
+            if(error){
+                console.log('Error fetch post:', error);
+                return {success:false, msg: 'Post fetching failed'};
+            }
+    
+            return {success:true, data:data};
+        } else{
+            
+            const {data, error} = await supabase
+            .from('posts')
+    
+            .select(`*,
+                user:users(id , name, image),
+                postLikes(*),
+                comments(count)`)
+            .order('created_at', {ascending:false})
+            .limit(limit);
+    
+            if(error){
+                console.log('Error fetch post:', error);
+                return {success:false, msg: 'Post fetching failed'};
+            }
+    
+            return {success:true, data:data};
         }
-
-        return {success:true, data:data};
        
     } catch (error) {
         console.log('Error fetch post:', error);
@@ -160,6 +182,54 @@ import { uploadFile } from "./imageService";
     } catch (error) {
         console.log('like comment:', error);
         return {success:false, msg: 'comment failed'};
+        
+    }
+  }
+
+  export const removeComment = async(commentId)=>{
+
+    try {
+        const {error} = await supabase
+        .from('comments')
+        .delete()
+        .eq('id', commentId)
+    
+        
+
+        if(error){
+            console.log('error remove comment', error);
+            return {success:false, msg: 'comment failed'};
+        }
+
+        return {success:true ,data:{commentId}};
+       
+    } catch (error) {
+        console.log('comment remove faild:', error);
+        return {success:false, msg: 'comment remove failed'};
+        
+    }
+  }
+
+  export const removePost = async(postId)=>{
+
+    try {
+        const {error} = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', postId)
+    
+        
+
+        if(error){
+            console.log('error remove post', error);
+            return {success:false, msg: 'post remove failed'};
+        }
+
+        return {success:true ,data:{postId}};
+       
+    } catch (error) {
+        console.log('post remove faild:', error);
+        return {success:false, msg: 'post remove failed'};
         
     }
   }

@@ -1,5 +1,6 @@
 import { SafeAreaView,Alert,StyleSheet, Text, View ,ScrollView, TouchableOpacity, Image, Pressable } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState,useEffect } from 'react'
+import { useRoute } from '@react-navigation/native'
 import { theme } from '../../helpers/theme'
 import { hp,wp } from '../../helpers/common'
 import TextEditor from '../../components/TextEditor'
@@ -17,13 +18,42 @@ import { createUpdatePost } from '../../services/postService'
 
 
 
+
 const NewPost = () => {
+  
   const {user} = useAuth();
+  const route = useRoute();
   const bodyRef =useRef();
   const editorRef =useRef(null);
   const navigation = useNavigation();
   const [Loading,setLoading] = useState(false);
   const [file ,setFile] = useState(file)
+
+  const { post } = route.params || {};
+  console.log('Post:', post);
+
+  useEffect(() =>{
+    if(post && post.id){
+      bodyRef.current=post.body;
+
+      setFile(post.file || null);
+      setTimeout(()=>{
+        
+        editorRef?.current?.setContentHTML(post.body);
+      },300
+      )
+    }
+  } , [])
+/*   useEffect(() => {
+    if (post && post.body /* && post.id *//* ) {
+      console.log('Setting bodyRef:', post.body); // Debugging
+      bodyRef.current = post.body;
+      setFile(post.file || null); */ 
+      // Update body reference
+     /*  editorRef?.current?.setContentHTML(post.body); // Update editor
+    }
+  }, [post]); */
+
 
   const onPick = async (isImage) => {
 
@@ -86,6 +116,8 @@ const NewPost = () => {
     body:bodyRef.current,
     userId:user?.id,
     }
+
+    if(post && post.id) data.id = post.id;
 
     setLoading(true);
 
@@ -172,7 +204,7 @@ console.log('Navigation:', navigation);
         <View style={styles.buttonContainer}>
         <Button
           buttonStyle={{ height: hp(6.2) }}
-          title="Post"
+          title={post && post.id ? 'Update' : 'Post'}
           loading={Loading}
           hasShadow={false}
           onPress={onsubmit}

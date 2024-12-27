@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View ,TouchableOpacity, Share} from 'react-native'
+import { StyleSheet, Text, View ,TouchableOpacity, Share, Alert} from 'react-native'
 import React from 'react'
 import { theme } from '../helpers/theme'
 import { hp, stripHtmlTags, wp  } from '../helpers/common'
@@ -34,7 +34,11 @@ const PostCard =({
     currentUser,
     navigate,
     hasShadow=true,
-    showMoreIcon=true
+    showMoreIcon=true,
+    showDelete=false,
+    onDelete=()=>{},
+    onEdit=()=>{}
+
 })=>{
     const shadowStyles= {
         shadowOffset: {
@@ -102,6 +106,22 @@ const PostCard =({
     Share.share(content);
    }
 
+   const handlePostDelete = async () => {
+    Alert.alert('Confirm','Are you sure!',[
+                        {
+                            text:'Cancel',
+                            onPress:()=>console.log('no'),
+                            style:'cancel'
+                        },
+                        {
+                            text:'Delete',
+                            onPress:()=>onDelete(item),
+                            style:'descructive'
+                        }
+                    ])
+
+   }
+
 /*     const onShare = async () => {
         try {
           let content = { message: stripHtmlTags(item?.body) }; // Initialize the share content with the post body.
@@ -157,6 +177,20 @@ const PostCard =({
             </TouchableOpacity>
                 )
             }
+            {
+                showDelete && currentUser.id == item?.userId && (
+                    <View style ={styles.actions}>
+                        <TouchableOpacity onPress={()=>onEdit(item)}>
+
+                            <Icon name='edit' size={hp(2.5)} strokeWidth={1.9} color={theme.colors.text} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handlePostDelete}>
+                            <Icon name='delete' size={hp(2.5)} strokeWidth={1.9} color='red' />
+                        </TouchableOpacity>
+                    </View>
+
+                )
+            } 
             </View>
       </View>
       {/* body of post */}

@@ -1,5 +1,5 @@
-import { Alert, Pressable, SafeAreaView, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Alert, Pressable, SafeAreaView, StyleSheet, Text, Touchable,FlatList, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
 import { AuthProvider } from '../../context/AuthContext'
@@ -9,8 +9,16 @@ import { hp ,wp} from '../../helpers/common'
 import { supabase } from '../../lib/supabase'
 import Avatar from '../../components/Avatar'
 import { getUserDAta } from '../../services/userServices'
+import { fetchPosts } from '../../services/postService'
+import PostCard from '../../components/PostCard'
+import Loading from '../../components/Loading'
 
+var limit=0;
 const Profile = () => {
+    
+    const [posts, setPosts] = useState([]);
+
+    const [hasMore, setHasMore] = useState(true);
     const {user ,setAuth}=useAuth();
     /* console.log('AuthContext value:', { user, setAuth }) */
     const navigation=useNavigation();
@@ -23,6 +31,18 @@ const Profile = () => {
           Alert.alert('sign out',"Error signing out")
         }
       }
+
+    const getPosts = async () => {
+        limit+=5;
+        let res=await fetchPosts(limit, user.id);
+    
+        if(res.success){
+            if(posts.length === res.data.length) setHasMore(false);
+            setPosts(res.data);
+        }
+    
+    
+    }
 
     /* Handle logout */
     const handleLogout=async ()=>{/* 
@@ -102,7 +122,35 @@ const Profile = () => {
 
                 </View>
             </View>
-        </View>
+            
+            <FlatList 
+          data={posts}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listStyle}
+          keyExtractor={item=> item.id.toString()}
+          renderItem={({item})=><PostCard 
+            item={item}
+            currentUser={user}
+            navigation={navigation}  
+            />
+            } 
+
+            onEndReached={()=>{
+
+              getPosts()
+
+              console.log('end reached')
+            }
+            }
+            onEndReachedThreshold={0}
+            ListFooterComponent={(
+              <View style={{margineVertical: posts.length==0? 200:30}}>
+                <Loading/>
+                </View>
+            )}  
+        />
+            </View>
+        
 
         
     </SafeAreaView>
@@ -144,7 +192,8 @@ container:{
 
 headerContainer: {
 marginHorizontal: wp(4),
-marginBottom: 20
+marginBottom: 20,
+marginTop:30
 },
 
 headerShape: {

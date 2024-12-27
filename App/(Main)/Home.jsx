@@ -21,108 +21,136 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
 
   const handlePostEvent = async (payload) => {
+    
+
     if(payload.eventType === 'INSERT' && payload?.new?.id) 
       {let newPost = {...payload.new};
     let res =await getUserDAta(newPost.userId);
+    newPost.postLikes=[];
+    newPost.comments=[{count:0}];
     newPost.user = res.success? res.data :{};
     setPosts(prevPosts =>[newPost,...prevPosts]);
-}
-  }
-  useEffect(() => {
+    }
 
-    let postChannel=supabase
-    .channel('posts')
-    .on ('postgress_changes',{event:'*',schema:'public',table:'posts'},handlePostEvent)
-    .subscribe();
-    /* getPosts(); */
-  
-return ()=> {
-  supabase.removeChannel(postChannel);
-}
+    if(payload.eventType == 'DELETE' && payload.old.id){
+      setPosts(prevPosts =>{
+        let updatedPosts = prevPosts.filter(post => post.id !=payload.old.id);
 
-
-  },[])
-
-  const getPosts = async () => {
-    limit+=5;
-    let res=await fetchPosts(limit);
-
-    if(res.success){
-      setPosts(res.data);
+        return updatedPosts;
+      })
     }
 
 
-  }
+    if(payload.eventType === 'UPDATE' && payload?.new?.id) {
 
-  //console.log('user',user);
-
- /*  const onLogout = async () =>{
-    
-    const {error} = await supabase.auth.signOut();
-    if(error){
-      Alert.alert('sign out',"Error signing out")
+      setPosts(prevPosts =>{
+        let updatedPosts= prevPosts.map(post=>{
+          if(post.id === payload.new.id){
+            post.body=payload.new.body;
+            post.file=payload.new.file; 
+          }
+          return post;
+              });
+              return updatedPosts;
     }
-  } */
-  return (
-    <SafeAreaView style={styles.SafeAreaView}>
-
-      <View style={styles.container}>
-
-        <View style={styles.header}>
-          <Text style={styles.title}>Beaver</Text>
-
-          <View style={styles.icon}>
-
-            <Pressable onPress={() => navigation.navigate('notification')}>
-              <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />  
-            </Pressable>
-
-            <Pressable onPress={() => navigation.navigate('newPost')}>
-              <Icon name='plus' size={hp(3.2)} strokeWidth={2.5} color={theme.colors.text} />  
-            </Pressable>
-
-            <Pressable onPress={() => navigation.navigate('profile')}>
-              <Avatar 
-                uri={user?.image}
-                size={hp(4.4)}
-                rounded={theme.radius.sm}
-                style={{borderWidth:1}}
-              />
-            </Pressable>
-            
-          </View>
-        
-        </View>
-          <FlatList 
-            data={posts}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listStyle}
-            keyExtractor={item=> item.id.toString()}
-            renderItem={({item})=><PostCard 
-              item={item}
-              currentUser={user}
-              navigation={navigation}  
-              />
-              } 
-
-              onEndReached={()=>{
-
-                getPosts()
-
-                console.log('end reached')
-              }
-              }
-              onEndReachedThreshold={0}
-              ListFooterComponent={(
-                <View style={{margineVertical: posts.length==0? 200:30}}>
-                  <Loading/>
-                  </View>
-              )}  
-          />
-      </View>
-     {/*  <Button title='logout' onPress={onLogout} /> */}
-    </SafeAreaView>
   )
+}
+}
+useEffect(() => {
+  
+  let postChannel=supabase
+  .channel('posts')
+  .on ('postgres_changes',{event:'*',schema:'public',table:'posts'},handlePostEvent)
+  .subscribe();
+  /* getPosts(); */
+  
+  return ()=> {
+    supabase.removeChannel(postChannel);
+  }
+  
+  
+},[])
+
+const getPosts = async () => {
+  limit+=5;
+  let res=await fetchPosts(limit);
+  
+  if(res.success){
+    setPosts(res.data);
+  }
+  
+  
+}
+
+//console.log('user',user);
+
+/*  const onLogout = async () =>{
+  
+  const {error} = await supabase.auth.signOut();
+  if(error){
+    Alert.alert('sign out',"Error signing out")
+  }
+} */
+return (
+  <SafeAreaView style={styles.SafeAreaView}>
+
+    <View style={styles.container}>
+
+      <View style={styles.header}>
+        <Text style={styles.title}>Beaver</Text>
+
+        <View style={styles.icon}>
+
+          <Pressable onPress={() => navigation.navigate('notification')}>
+            <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />  
+          </Pressable>
+
+          <Pressable onPress={() => navigation.navigate('newPost')}>
+            <Icon name='plus' size={hp(3.2)} strokeWidth={2.5} color={theme.colors.text} />  
+          </Pressable>
+
+          <Pressable onPress={() => navigation.navigate('profile')}>
+            <Avatar 
+              uri={user?.image}
+              size={hp(4.4)}
+              rounded={theme.radius.sm}
+              style={{borderWidth:1}}
+            />
+          </Pressable>
+          
+        </View>
+      
+      </View>
+        <FlatList 
+          data={posts}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listStyle}
+          keyExtractor={item=> item.id.toString()}
+          renderItem={({item})=><PostCard 
+            item={item}
+            currentUser={user}
+            navigation={navigation}  
+            />
+            } 
+
+            onEndReached={()=>{
+
+              getPosts()
+
+              console.log('end reached')
+            }
+            }
+            onEndReachedThreshold={0}
+            ListFooterComponent={(
+              <View style={{margineVertical: posts.length==0? 200:30}}>
+                <Loading/>
+                </View>
+            )}  
+        />
+    </View>
+   {/*  <Button title='logout' onPress={onLogout} /> */}
+  </SafeAreaView>
+)
 };
 
 
@@ -135,7 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: wp(2.5),
   },
-
+  
   container:{
     flex: 1
   },
