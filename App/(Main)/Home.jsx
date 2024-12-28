@@ -19,6 +19,7 @@ const Home = () => {
   const navigation = useNavigation();
 
   const [posts, setPosts] = useState([]);
+  const [notificationCount,setNotificationCount]=useState(0);
 
   const handlePostEvent = async (payload) => {
     
@@ -56,20 +57,53 @@ const Home = () => {
   )
 }
 }
+
+const handleNewNotification = async (payload) => {
+  console.log('got  new notification:', payload);
+  if(payload.eventType === 'INSERT' && payload.new.id){
+    setNotificationCount(prevCount => prevCount+1);
+  }
+}
 useEffect(() => {
-  
+/*   if (!user?.id) {
+    console.log('User ID not available. Skipping subscription setup.');
+    return;
+  }
+  console.log('Setting up notification subscription for user:', user.id);
+
+   */
   let postChannel=supabase
   .channel('posts')
   .on ('postgres_changes',{event:'*',schema:'public',table:'posts'},handlePostEvent)
   .subscribe();
   /* getPosts(); */
-  
+/*   console.log('User ID for notification subscription:', user.id); */
+  let notificationChannel=supabase
+  .channel('notifications')
+  .on ('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`reciverId=eq.${user.id}`},/* (payload) => { */
+  /*   console.log('Notification received:', payload); */
+    handleNewNotification/* (payload); */
+ /*  } */)
+  .subscribe(/* (status) => {
+    console.log('Notification channel status:', status */);
+/* 
+    if (status === 'SUBSCRIBED') {
+      console.log('Subscription successfully established.');
+    } else if (status === 'CLOSED') {
+      console.error('Subscription closed unexpectedly!');
+    } else if (status === 'ERROR') {
+      console.error('Error establishing subscription.');
+    }
+  });
+   */
   return ()=> {
     supabase.removeChannel(postChannel);
+/*     console.log('Cleaning up notification subscription...'); */
+    supabase.removeChannel(notificationChannel);
   }
   
   
-},[])
+},[/* user?.id */])
 
 const getPosts = async () => {
   limit+=5;
@@ -102,7 +136,14 @@ return (
         <View style={styles.icon}>
 
           <Pressable onPress={() => navigation.navigate('notification')}>
-            <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />  
+            <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />
+              {
+                notificationCount>0 && (
+                  <View style ={styles.pill}>
+                    <Text style={styles.pillText}>{notificationCount}</Text>
+                  </View>
+                )
+              }
           </Pressable>
 
           <Pressable onPress={() => navigation.navigate('newPost')}>

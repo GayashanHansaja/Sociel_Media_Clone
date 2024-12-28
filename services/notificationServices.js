@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 
     try {
         const {data, error} = await supabase
-        .from('notification')
+        .from('notifications')
         .insert(notification)
 
         .select()
@@ -32,23 +32,21 @@ import { supabase } from "../lib/supabase";
         .from('notifications')
 
         .select(`*,
-            user:users(id , name, image),
-            postLikes(*),
-            comments(*, user:users(id, name, image))`)
-        .eq('id', postId)
-        .order("created_at",{ascending:false ,foriegnTable:'comments'})
-        .single();
+           sender: senderId(id,name,image)`)
+        .eq('reciverId', reciverId)
+        .order("created_at",{ascending:false });
+  
 
         if(error){
-            console.log('Error fetch postdetail :', error);
-            return {success:false, msg: 'Postdetails fetching failed'};
+            console.log('Error fetch notifications :', error);
+            return {success:false, msg: 'notifications fetching failed'};
         }
 
         return {success:true, data:data};
        
     } catch (error) {
-        console.log('Error fetch post:', error);
-        return {success:false, msg: 'Post creation failed'};
+        console.log('Error fetch notifications:', error);
+        return {success:false, msg: 'notifications creation failed'};
         
     }
   }

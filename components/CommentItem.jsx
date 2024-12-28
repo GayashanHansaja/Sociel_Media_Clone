@@ -10,7 +10,8 @@ import Icon from '../assets/icons/Icon'
 const CommentItem = ({
     item,
     canDelete=false,
-    onDelete=()=>{}
+    onDelete=()=>{},
+    highlight=false
 }) => {
     const handleDelete=()=>{
                 Alert.alert('Confirm','Are you sure!',[
@@ -31,7 +32,7 @@ const CommentItem = ({
     <View style={styles.container}>
         <Avatar uri={item?.user?.image}
         />
-        <View style={styles.content}>
+        <View style={[styles.content,highlight && styles.highlight]}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between',alignItems: 'center'}}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.text}>{item?.user?.name}</Text>

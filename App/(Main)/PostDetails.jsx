@@ -13,6 +13,7 @@ import { Icon } from '@rneui/themed'
 import CommentItem from '../../components/CommentItem'
 import { supabase } from '../../lib/supabase'
 import { getUserDAta } from '../../services/userServices'
+import { createNotification } from '../../services/notificationServices'
 
 
 const PostDetails = () => {
@@ -24,7 +25,7 @@ const PostDetails = () => {
   const commentRef =useRef ('')
   const [loading, setLoading] = useState(false)
 
-  const { postId } = route.params || {};
+  const { postId,commentId } = route.params || {};
 
   const [post, setPost] = useState(null)
 
@@ -92,8 +93,8 @@ const onNewComment =async () => {
     if(res.success){
       if(user.id!=post.userId){
         let notify ={
-          ssenderId:user.id,
-          receiverId:post.userId,
+          senderId:user.id,
+          reciverId:post.userId,
           title:'Comment on your Post',
 
           data:JSON.stringify({postId:post.id,commentId:res?.data?.id}),
@@ -200,6 +201,7 @@ if(!post){
                 key={comment?.id?.toString()}
                  item={comment}
                  onDelete={onDeleteComment}
+                 highlight={commentId==comment.id}
                  canDelete={user.id == comment.userId || user.id == post.userId}
                  />
               )
