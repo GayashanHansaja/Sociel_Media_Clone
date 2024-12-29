@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         height: hp(7.2),
         alignItems: 'center',
         borderWidth: 0.5,
-        borderColor: 'gray',
+        borderColor: theme.colors.text,
         borderRadius: 24,
         gap: 12,
         paddingHorizontal:18,

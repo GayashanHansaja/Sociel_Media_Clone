@@ -8,6 +8,8 @@ import { hp, wp } from '../helpers/common';
 import { theme } from '../helpers/theme';
 import { supabase } from '../lib/supabase';
 import Layout from './_layout';
+import ScreenWrapper from '../components/ScreenWrapper';
+import BackButton from '../components/BackButton';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -43,9 +45,10 @@ const Login = () => {
   }
 
   return (
-    <SafeAreaView style={styles.SafeAreaView}>
+    <ScreenWrapper /* style={styles.SafeAreaView} */>
       <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
+        <BackButton navigation={navigation} />
         {/* Welcome */}
         <View>
           <Text style={styles.welcomeText}>Hey,</Text>
@@ -54,7 +57,7 @@ const Login = () => {
 
         {/* Form */}
         <View style={styles.form}>
-          <Text>Please login to continue!</Text>
+          <Text style={{fontSize:hp(1.5),color:theme.colors.text}}>Please login to continue!</Text>
 
           <Input
             icon={<Icon name="mail" size={26} strokeWidth={1.6} />}
@@ -71,7 +74,7 @@ const Login = () => {
 
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
 
-          <Button title="Login" loading={Loading} onPress={onsubmit} />
+          <Button  title="Login" loading={Loading} onPress={onsubmit} />
         </View>
 
         {/* Footer */}
@@ -82,29 +85,31 @@ const Login = () => {
           </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };
 
 export default Login;
 
 const styles = StyleSheet.create({
-  SafeAreaView: {
+/*   SafeAreaView: {
     flex: 1,
     paddingHorizontal: wp(6),
-  },
+  }, */
   container: {
     flex: 1,
-    gap:45
+    gap:45,
+    paddingHorizontal: wp(5),
   },
   welcomeText: {
     fontSize: 50,
     fontWeight: theme.fonts.bold,
     color: theme.colors.text,
-    marginTop: 20,
+    /* marginTop: 20, */
   },
   form: {
-    gap: 20,
+    gap: 25,
+
   },
   forgotPassword: {
     textAlign: 'right',
@@ -115,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 5,
     
   },
   footerText: {

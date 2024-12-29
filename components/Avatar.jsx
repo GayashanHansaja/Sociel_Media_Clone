@@ -9,7 +9,7 @@ const Avatar = ({
 
     uri,
     size=hp(4.5),
-    rounded=theme.radius.md,
+    rounded=theme.radius.xxl,
     style={},
 }) => {
     console.log('Avatar URI:', uri);

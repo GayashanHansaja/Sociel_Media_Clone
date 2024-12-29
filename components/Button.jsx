@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderCurve: 'continuous',
     height: hp(6),
-    
 
   },
 

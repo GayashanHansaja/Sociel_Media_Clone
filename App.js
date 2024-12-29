@@ -15,6 +15,7 @@ import EditProfile from './App/(Main)/EditProfile';
 import PostDetails from './App/(Main)/PostDetails';
 import { AuthProvider } from './context/AuthContext';
 import { LogBox } from 'react-native';
+import NotificationItem from './components/NotificationItem';
 
 LogBox.ignoreLogs([
   'Warning: TNodeChildrenRenderer: Support for defaultProps will be removed',
@@ -33,7 +34,7 @@ export default function App() {
     <AuthProvider>
 
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="welcome">
+        <Stack.Navigator  screenOptions={{ headerShown: false }} initialRouteName="welcome">
           <Stack.Screen name="main" component={Main} />
           <Stack.Screen name="welcome" component={Welcome} />
           <Stack.Screen name="signup" component={SignUp} />
@@ -44,14 +45,17 @@ export default function App() {
           <Stack.Screen name="newPost" component={NewPost} />
           <Stack.Screen name="profile" component={Profile} />
           <Stack.Screen name="editProfile" component={EditProfile} />
+          <Stack.Screen name="notificationItem" component={NotificationItem} />
           <Stack.Screen name="PostDetails" component={PostDetails}
+          
            
            options={{
              presentation: 'modal', // Makes it a modal
-             headerShown: true,    // Optional: hide the header if needed
            }} />
 
         </Stack.Navigator>
+        
+
       </NavigationContainer>
     </AuthProvider>
   );

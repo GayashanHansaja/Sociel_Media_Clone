@@ -1,7 +1,7 @@
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { startTransition, useEffect,useRef,useState } from 'react'
 import { useRoute } from '@react-navigation/native'
-import { createComment, fetchPostsDetails } from '../../services/postService'
+import { createComment, fetchPostsDetails, removeComment, removePost, removePostLikes } from '../../services/postService'
 import { theme } from '../../helpers/theme'
 import { hp, wp } from '../../helpers/common'
 import PostCard from '../../components/PostCard'
@@ -11,6 +11,9 @@ import Loading from '../../components/Loading'
 import Input from '../../components/Input'
 import { Icon } from '@rneui/themed'
 import CommentItem from '../../components/CommentItem'
+import { supabase } from '../../lib/supabase'
+import { getUserDAta } from '../../services/userServices'
+import { createNotification } from '../../services/notificationServices'
 
 
 const PostDetails = () => {
@@ -22,14 +25,50 @@ const PostDetails = () => {
   const commentRef =useRef ('')
   const [loading, setLoading] = useState(false)
 
-  const { postId } = route.params || {};
+  const { postId,commentId } = route.params || {};
 
   const [post, setPost] = useState(null)
 
-  useEffect(()=>
-{
+  const handleNewComment=async (payload)=>{
+    console.log('new comment:', payload.new);
+    if(payload.new){
+      let newComment={...payload.new};
+      let res= await getUserDAta(newComment.userId);
+      newComment.user=res.success? res.data :{};
+
+      setPost(prevPost=>{
+        return {
+          ...prevPost,
+          comments:[newComment, ...prevPost.comments]
+
+        }
+        }
+      )
+
+    }
+  }
+
+
+
+
+
+ useEffect(() => {
+
+    let commentChannel=supabase
+    .channel('comments')
+    .on ('postgres_changes',{event:'INSERT',schema:'public',table:'comments',
+      filter:`postId=eq.${postId}`},handleNewComment
+    )
+    .subscribe();
+    /* getPosts(); */
     getPostDetails();
-},[]);
+  
+return ()=> {
+  supabase.removeChannel(commentChannel);
+}
+
+
+  },[])
 
 const getPostDetails=async()=>{
     //fetch post details here
@@ -52,6 +91,16 @@ const onNewComment =async () => {
 
     setLoading(false);
     if(res.success){
+      if(user.id!=post.userId){
+        let notify ={
+          senderId:user.id,
+          reciverId:post.userId,
+          title:'Comment on your Post',
+
+          data:JSON.stringify({postId:post.id,commentId:res?.data?.id}),
+        }
+        createNotification(notify);
+      }
       inputRef?.current?.clear();
       commentRef.current="";
     }else{
@@ -59,6 +108,38 @@ const onNewComment =async () => {
     }
 
 }
+const onDeleteComment=async(comment)=>{
+
+  let res=await removeComment(comment?.id);
+
+  if(res.success){
+    setPost(prevPost=>{
+
+      let updatedPost={...prevPost};
+      updatedPost.comments=updatedPost.comments.filter(c=>c.id!=comment.id);
+      return updatedPost;
+    })
+  }else{
+    Alert.alert('comment',res.msg);
+  }
+}
+
+const onDeletePost= async(item)=>{
+  //delete post
+  let res =await removePost(post.id);
+  if(res.success){
+    navigation.goBack();
+
+  }else{
+    Alert.alert('post',res.msg);
+  }
+}
+
+const onEditPost = async (item) => {
+  navigation.navigate('newPost', { post:item }); // Correctly navigate to 'NewPost' with params
+};
+
+
 if(startLoading){
     return (
         <View style={styles.center}>
@@ -82,8 +163,11 @@ if(!post){
 
         navigate={navigation.navigate}
         hasShadow={false}
-        showMoreIcon={false}/>
-
+        showMoreIcon={false}
+        
+        showDelete={true}
+        onEdit={onEditPost}
+        onDelete={onDeletePost}/>
         {/* comment input */}
 
         <View style={styles.inputContainer}>
@@ -110,12 +194,14 @@ if(!post){
 
         </View>
         {/* comments */}
-          <View style={{margineVertical:15 ,gap:17}}>
+          <View style={{margineVertical:15,marginTop:10 ,gap:17}}>
             {
               post?.comments.map(comment =>
                 <CommentItem
                 key={comment?.id?.toString()}
                  item={comment}
+                 onDelete={onDeleteComment}
+                 highlight={commentId==comment.id}
                  canDelete={user.id == comment.userId || user.id == post.userId}
                  />
               )
@@ -153,7 +239,9 @@ const styles = StyleSheet.create({
         },
 
 sendIcon:{
-
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth:0.8,
     borderColor: theme.colors.primary,
     borderRadius: theme.radius.lg,
     borderCurve: 'continuous',
