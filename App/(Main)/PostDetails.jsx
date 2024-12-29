@@ -194,7 +194,7 @@ if(!post){
 
         </View>
         {/* comments */}
-          <View style={{margineVertical:15 ,gap:17}}>
+          <View style={{margineVertical:15,marginTop:10 ,gap:17}}>
             {
               post?.comments.map(comment =>
                 <CommentItem
@@ -239,7 +239,9 @@ const styles = StyleSheet.create({
         },
 
 sendIcon:{
-
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth:0.8,
     borderColor: theme.colors.primary,
     borderRadius: theme.radius.lg,
     borderCurve: 'continuous',

@@ -14,6 +14,8 @@ import * as ImagePicker from 'expo-image-picker'
 import { getSupabaseFileUrl } from '../../services/imageService'
 import { Video } from 'expo-av'
 import { createUpdatePost } from '../../services/postService'
+import ScreenWrapper from '../../components/ScreenWrapper'
+import Header from '../../components/Header'
 
 
 
@@ -143,8 +145,9 @@ console.log('file uri:',getFileUri(file));
 console.log('Navigation:', navigation);
 
   return (
-    <SafeAreaView style={[styles.SafeAreaView, {backgroundColor:'white'}]}>
-      {/* <View style={styles.container}> */}
+    <ScreenWrapper bg="white">
+      <View style={styles.container}>
+      <Header title='New Post' />
         <ScrollView contentContainerStyle={{gap:20}}>
           {/* avatar */}
           <View style={styles.header}>
@@ -181,7 +184,7 @@ console.log('Navigation:', navigation);
                 }
 
                 <Pressable style={styles.closeIcon} onPress={()=>setFile(null)}>
-                  <Icon name='delete' size={20} color='white' />
+                  <Icon name='delete' size={20} color='red' />
                 </Pressable>
               </View>
             )
@@ -193,41 +196,37 @@ console.log('Navigation:', navigation);
             </Text>
             <View style={styles.mediaIcons}>
               <TouchableOpacity onPress={() => onPick(true)}>
-                <Icon name="Image" size={30} color={theme.colors.accent} />
+                <Icon name="Image" size={30} color={theme.colors.textDark} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => onPick(false)}>
-                <Icon name="Camera" size={30} color={theme.colors.accent} />
+                <Icon name="Camera" size={30} color={theme.colors.textDark} />
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
         <Button
-          buttonStyle={{ height: hp(6.2) }}
+          buttonStyle={{ height: hp(6.2)}}
           title={post && post.id ? 'Update' : 'Post'}
           loading={Loading}
           hasShadow={false}
           onPress={onsubmit}
         />
       </View>
-      {/* </View> */}
+      </View>
 
-    </SafeAreaView>
+    </ScreenWrapper>
   )
 }
 
 export default NewPost
 
 const styles = StyleSheet.create({
-  SafeAreaView: {
-    flex: 1,
-    paddingHorizontal: wp(1),
-  },
   container:{
     flex: 1,
     marginBottom: 30,
     paddingHorizontal: wp(4),
-    gap: 20
+    gap: 15,
   },
 
   title: {
@@ -277,8 +276,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: theme. radius.xl,
     borderCurve: 'continuous',
-    borderColor: theme.colors.textLight,
-    marginBottom: 20
+    borderColor: theme.colors.gray,
+
     },
     
   mediaIcons: {
@@ -290,7 +289,7 @@ const styles = StyleSheet.create({
   addImageText: {
     fontSize: hp(1.9),
     fontWeight: theme. fonts.semibold,
-    color: theme.colors.text,
+    color: theme.colors.textDark,
     },
   
 
@@ -302,7 +301,7 @@ const styles = StyleSheet.create({
   file: {
     height: hp(30),
     width: '100%',
-    borderRadius: theme. radius.xl,
+    borderRadius: theme. radius.md,
     overflow: 'hidden',
     borderCurve: 'continuous'
     },
@@ -314,11 +313,11 @@ const styles = StyleSheet.create({
     right: 10,
     borderRadius: 50,
     padding: 5,
-    backgroundColor: 'rgba(100,0,0,0.6)',
     // shadowColor: theme.colors.textLight,
     // shadowOffset: {width: 0, height: 3},
     // shadowOpacity: 0.6,
     // shadowRadius: 8
     
     }
+    
 })

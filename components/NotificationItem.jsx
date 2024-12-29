@@ -17,7 +17,7 @@ const NotificationItem = ({item ,navigation}) => {
 
     }
     console.log('Item:', item);
-    const createdAt =moment(item?.created_at).format('MMM d');
+    const createdAt =moment(item?.created_at).format('MMM DD');
   return (
    <TouchableOpacity style={styles.container} onPress={handleClick}>
     <Avatar uri ={item.sender.image}

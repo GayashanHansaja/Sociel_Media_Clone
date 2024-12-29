@@ -161,12 +161,12 @@ import { uploadFile } from "./imageService";
     }
   }
 
-  export const createComment = async(comment)=>{
+  export const createComment = async(commentId)=>{
 
     try {
         const {data, error} = await supabase
         .from('comments')
-        .insert(comment)
+        .insert(commentId)
 
         .select()
         .single()

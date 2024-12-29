@@ -13,6 +13,8 @@ import Loading from '../../components/Loading';
 import {updateUser} from '../../services/userServices';
 import { useNavigation } from '@react-navigation/native'
 import * as ImagePicker from 'expo-image-picker';
+import ScreenWrapper from '../../components/ScreenWrapper'
+import Header from '../../components/Header'
 
 
 const EditProfile = () => {
@@ -94,9 +96,10 @@ const EditProfile = () => {
   console.log("Image source:", imageSource);
 
   return (
-    <SafeAreaView style={styles.SafeAreaView}>
+    <ScreenWrapper>
       <View style={styles.container}>
         <ScrollView style={{flex: 1}}>
+          <Header title='Edit Profile' />
 
           {/* form */}
           <View style={styles.form}>
@@ -140,19 +143,13 @@ const EditProfile = () => {
           </View>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </ScreenWrapper>
   )
 }
 
 export default EditProfile
 
 const styles = StyleSheet.create({
-  SafeAreaView: {
-      flex: 1,
-      paddingHorizontal: wp(1),
-    },
-  
-
   container: {
     flex: 1,
     paddingHorizontal: wp(4)
@@ -167,7 +164,7 @@ const styles = StyleSheet.create({
     avatar: {
     width: '100%',
     height: '100%',
-    borderRadius: theme.radius.xxl*1.8,
+    borderRadius: 100,
     borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: theme.colors.darkLight
@@ -187,6 +184,7 @@ const styles = StyleSheet.create({
   form: {
     gap: 18,
     marginTop: 20,
+
   },
     
     input: {

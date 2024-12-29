@@ -39,7 +39,7 @@ const TextEditor = ({
         }}
 
         style={styles.richBar}
-        flatContainerStyle={styles.listStyle}
+        flatContainerStyle={styles.flatStyle}
         selectedIconTint={theme.colors.accent}
         editor={editorRef}
         disabled={false}
@@ -62,9 +62,9 @@ export default TextEditor
 
 const styles = StyleSheet.create({
     richBar:{
-        borderTopRightRadius:theme.radius.xl,
-        borderTopLeftRadius:theme.radius.xl,
-        backgroundColor: theme.colors.textLight,
+        borderTopRightRadius:theme.radius.md,
+        borderTopLeftRadius:theme.radius.md,
+        backgroundColor: theme.colors.gray,
       },
         
     /* listStyle:{
@@ -77,16 +77,16 @@ const styles = StyleSheet.create({
       flex:1,
       borderWidth:1.5,
       borderTopWidth:0,
-      borderBottomLeftRadius:theme.radius.xl,
-      borderBottomRightRadius:theme.radius.xl,
-      borderColor:theme.colors.textLight,
+      borderBottomLeftRadius:theme.radius.md,
+      borderBottomRightRadius:theme.radius.md,
+      borderColor:theme.colors.gray,
       padding:5,
 
     },
 
     contentStyle:{
-      color:theme.colors.text,
-      placeholderColor:theme.colors.textLight,
+      color:theme.colors.textDark,
+      placeholderColor:'gray',
     },
 
     flatStyle:{

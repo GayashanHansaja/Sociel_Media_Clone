@@ -11,12 +11,14 @@ import { fetchPosts } from '../../services/postService';
 import PostCard from '../../components/PostCard';
 import Loading from '../../components/Loading';
 import { getUserDAta } from '../../services/userServices';
+import ScreenWrapper from '../../components/ScreenWrapper';
 
 var limit=0;
 const Home = () => {
   
   const {user, setAuth} =useAuth();
   const navigation = useNavigation();
+  const [hasMore, setHasMore] = useState(true);
 
   const [posts, setPosts] = useState([]);
   const [notificationCount,setNotificationCount]=useState(0);
@@ -106,10 +108,12 @@ useEffect(() => {
 },[/* user?.id */])
 
 const getPosts = async () => {
+  if(!hasMore) return null;
   limit+=5;
   let res=await fetchPosts(limit);
   
   if(res.success){
+      if(posts.length == res.data.length) setHasMore(false);
     setPosts(res.data);
   }
   
@@ -126,17 +130,18 @@ const getPosts = async () => {
   }
 } */
 return (
-  <SafeAreaView style={styles.SafeAreaView}>
+  <ScreenWrapper bg='white'>
 
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={styles.title}>Beaver</Text>
+        <Text style={styles.title}>Threadify</Text>
 
         <View style={styles.icon}>
 
-          <Pressable onPress={() => navigation.navigate('notification')}>
-            <Icon name='heart' size={hp(3.2)} strokeWidth={2.5}  color={theme.colors.text} />
+          <Pressable onPress={() =>{ setNotificationCount(0)
+            navigation.navigate('notification')}}>
+            <Icon name='heart' size={hp(3.2)} strokeWidth={2.2}  color={theme.colors.text} />
               {
                 notificationCount>0 && (
                   <View style ={styles.pill}>
@@ -147,14 +152,14 @@ return (
           </Pressable>
 
           <Pressable onPress={() => navigation.navigate('newPost')}>
-            <Icon name='plus' size={hp(3.2)} strokeWidth={2.5} color={theme.colors.text} />  
+            <Icon name='plus' size={hp(3.2)} strokeWidth={3} color={theme.colors.text} />  
           </Pressable>
 
           <Pressable onPress={() => navigation.navigate('profile')}>
             <Avatar 
               uri={user?.image}
               size={hp(4.4)}
-              rounded={theme.radius.sm}
+              rounded={theme.radius.xl}
               style={{borderWidth:1}}
             />
           </Pressable>
@@ -182,15 +187,20 @@ return (
             }
             }
             onEndReachedThreshold={0}
-            ListFooterComponent={(
+            ListFooterComponent={hasMore?(
               <View style={{margineVertical: posts.length==0? 200:30}}>
                 <Loading/>
                 </View>
-            )}  
+            ):(
+              <View style={{marginBottom:30}}>
+                <Text style={styles.noPosts}>No more posts</Text>
+                </View>)
+            
+            }  
         />
     </View>
    {/*  <Button title='logout' onPress={onLogout} /> */}
-  </SafeAreaView>
+  </ScreenWrapper>
 )
 };
 
@@ -200,11 +210,7 @@ return (
 export default Home
 
 const styles = StyleSheet.create({
-  SafeAreaView: {
-    flex: 1,
-    paddingHorizontal: wp(2.5),
-  },
-  
+
   container:{
     flex: 1
   },
@@ -220,9 +226,8 @@ header: {
 flexDirection: 'row',
 alignItens: 'center',
 justifyContent: 'space-between',
-marginBottom: 10,
 marginHorizontal: wp(4),
-marginTop: hp(1.3)
+
 },
 
 title: {
@@ -232,8 +237,9 @@ fontWeight: theme. fonts.bold
 },
 
 avatarImage: {
-height: hp(4.3),
-width: hp(4.3),
+height: hp(4.9),
+width: wp(6),
+gap: 10,
 borderRadius: theme.radius.sm,
 borderCurve: 'continuous',
 borderColor: theme.colors.gray,

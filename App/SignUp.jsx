@@ -7,6 +7,7 @@ import Button from '../components/Button';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../helpers/theme';
 import { supabase } from '../lib/supabase';
+import ScreenWrapper from '../components/ScreenWrapper';
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -50,7 +51,7 @@ const SignUp = () => {
   };
     // Further login logic
     return (
-      <SafeAreaView style={styles.SafeAreaView}>
+      <ScreenWrapper >
         <StatusBar barStyle="dark-content" />
         <View style={styles.container}>
           {/* Welcome */}
@@ -100,20 +101,18 @@ const SignUp = () => {
             </Pressable>
           </View>
         </View>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   };
   
   export default SignUp;
   
   const styles = StyleSheet.create({
-    SafeAreaView: {
-      flex: 1,
-      paddingHorizontal: wp(6),
-    },
+   
     container: {
       flex: 1,
-      gap:45
+      gap:45,
+      paddingHorizontal: wp(5),
     },
     welcomeText: {
       fontSize: 50,
@@ -123,16 +122,19 @@ const SignUp = () => {
     },
     form: {
       gap: 20,
+
     },
     forgotPassword: {
       textAlign: 'right',
       fontWeight: theme.fonts.semibold,
       color: theme.colors.text,
+      
     },
     footer: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      gap: 5,
       
     },
     footerText: {

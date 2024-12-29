@@ -153,13 +153,13 @@ const PostCard =({
       
     const createdAt= moment(item?.created_ad).format('MMM DD');
   return (
-    <View style={[styles.container, hasShadow && shadowStyles]}>
+    <View style={[styles.container/* , hasShadow && shadowStyles */]}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
             <Avatar
                 size={hp(4.5)}
                 uri={item?.user?.image}
-                rounded={theme.radius.md}
+                rounded={theme.radius.xl}
                 />
             <View  style ={{gap:2}}>
 
@@ -268,15 +268,15 @@ export default PostCard
 const styles = StyleSheet.create({
     container: {
         gap: 10,
-        marginBottom: 15,
+        marginBottom: 45,
         borderRadius: theme. radius.xxl*1.1,
         borderCurve: 'continuous',
-        padding: 10,
-        paddingVertical: 12,
+        
+        paddingVertical: 5,
         backgroundColor: 'white',
-        borderWidth: 0.5,
-        borderColor: theme. colors.gray,
-        shadowColor: '#000'
+/*         borderWidth: 0.5, */
+    /*     borderColor: theme. colors.gray, */
+       /*  shadowColor: '#000' */
     },
         
     header: {
@@ -287,7 +287,8 @@ const styles = StyleSheet.create({
     userInfo: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8
+        gap: 8,
+        paddingLeft: 10
     },
         
     username: {
@@ -303,14 +304,14 @@ const styles = StyleSheet.create({
     },
         
     content: {
-        gap: 10,
+        gap: 4,
         // marginBottom: 10T
     },
         
     postMedia: {
-        height: hp(40),
+        height: hp(35),
         width: '100%',
-        borderRadius: theme. radius.xl,
+        borderRadius: theme. radius.sm,
         borderCurve: 'continuous'
     }, 
     postBody: {
@@ -320,20 +321,21 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 15
+        gap: 10
     },
         
     footerButton: {
         marginLeft: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 4
+        gap:3
     },
         
     actions: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 18,
+        gap: 10,
+        marginLeft: 10
     },
         
     count: {

@@ -9,6 +9,7 @@ import { hp, wp } from '../../helpers/common';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { useNavigation } from '@react-navigation/native';
 import NotificationItem from '../../components/NotificationItem';
+import Header from '../../components/Header';
 
 const Notification = () => {
   const [notifications,setNotifications]= useState([]);
@@ -26,6 +27,7 @@ const Notification = () => {
   return (
     <ScreenWrapper>
       <View style={styles.container}>
+        <Header title ="Notifications"/>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listStyle}>
           {
             notifications.map(item =>{

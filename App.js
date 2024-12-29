@@ -34,7 +34,7 @@ export default function App() {
     <AuthProvider>
 
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="welcome">
+        <Stack.Navigator  screenOptions={{ headerShown: false }} initialRouteName="welcome">
           <Stack.Screen name="main" component={Main} />
           <Stack.Screen name="welcome" component={Welcome} />
           <Stack.Screen name="signup" component={SignUp} />
@@ -51,7 +51,6 @@ export default function App() {
            
            options={{
              presentation: 'modal', // Makes it a modal
-             headerShown: true,    // Optional: hide the header if needed
            }} />
 
         </Stack.Navigator>
