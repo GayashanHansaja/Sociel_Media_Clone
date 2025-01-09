@@ -40,3 +40,37 @@ Follow these steps to run Threadify on your local machine:
    ```bash
    git clone https://github.com/yourusername/threadify.git
 
+2. **Navigate t the project**:
+   ```bash
+   cd threadify
+
+3. **Install dependencies**:
+   ```bash
+   npm install
+4. **Start the development server**:
+   ```bash
+   npm start
+---
+
+## Contribution Guidelines
+
+We welcome contributions to Threadify! To contribute.
+1.**Fork the repository**
+
+2. **Create a new branch**:
+   ```bash
+   git checkout -b feature-name
+
+3. **Make your changes and commit them**:
+   ```bash
+   git commit -m "Add your message here"
+
+4. **Push to the branch**:
+   ```bash
+   git push origin feature-name
+
+5.**Open a pull request**
+
+---
+## Future Addition
+ - **Expanded Authentication**:Google, Facebook, and Twitter integration
