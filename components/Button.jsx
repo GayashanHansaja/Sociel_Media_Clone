@@ -42,7 +42,7 @@ export default Button
 const styles = StyleSheet.create({
   button:{
 
-    backgroundColor: '#0A69E6',
+    backgroundColor:'#009688',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',

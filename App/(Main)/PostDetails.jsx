@@ -14,6 +14,8 @@ import CommentItem from '../../components/CommentItem'
 import { supabase } from '../../lib/supabase'
 import { getUserDAta } from '../../services/userServices'
 import { createNotification } from '../../services/notificationServices'
+import ScreenWrapper from '../../components/ScreenWrapper'
+import Header from '../../components/Header'
 
 
 const PostDetails = () => {
@@ -155,6 +157,8 @@ if(!post){
     )
 }
   return (
+    <ScreenWrapper bg={'white'}>
+      <Header title="Post" />
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
         <PostCard 
@@ -216,6 +220,7 @@ if(!post){
          
       </ScrollView>
     </View>
+    </ScreenWrapper>
   )
 }
 

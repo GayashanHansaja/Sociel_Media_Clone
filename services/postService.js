@@ -35,7 +35,7 @@ import { uploadFile } from "./imageService";
     }
   }
 
-  export const fetchPosts = async(limit=4,userId)=>{
+  export const fetchPosts = async(limit=2,userId)=>{
 
     try {
         if(userId){

@@ -54,7 +54,7 @@ const Icon = ({name,...props}) => {
     height ={props.size || 24}
     width = {props.size ||24}
     strokeWidth={props.strokeWidth || 1.9}
-    color='#0A69E6'
+    color='#009688'
     {...props}
     />
   )
