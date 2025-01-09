@@ -4,7 +4,7 @@ export const theme={
         primaryDark:'#00AC62',
         secondary:'#3E3E3E',
         secondaryDark:'#E1E1E1',
-        accent:'#0A69E6',
+        accent:'#009688',
         gray:'#F0F0F0',
 
         text:'black',

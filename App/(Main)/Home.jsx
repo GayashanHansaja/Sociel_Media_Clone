@@ -109,7 +109,7 @@ useEffect(() => {
 
 const getPosts = async () => {
   if(!hasMore) return null;
-  limit+=5;
+  limit+=2;
   let res=await fetchPosts(limit);
   
   if(res.success){

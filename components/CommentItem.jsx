@@ -37,7 +37,7 @@ const CommentItem = ({
                 <View style={styles.nameContainer}>
                     <Text >{item?.user?.name}</Text>
                     <Text>.</Text>
-                    <Text style={styles.text}>{createdAr}</Text>
+                    <Text >{createdAr}</Text>
                 </View>
                 {
                     canDelete &&(
@@ -49,7 +49,7 @@ const CommentItem = ({
                 }
 
             </View>
-            <Text style={[styles.text, {fontWeight:'normal'}]}>{item?.text}</Text>
+            <Text style={[styles.text, {fontWeight:'bold'}]}>{item?.text}</Text>
 
         </View>
 
@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
         text: {
         fontSize: hp(1.6),
         fontWeight: theme. fonts.medium,
-        color: theme.colors.textLight,
+        color: theme.colors.text,
         }
 })

@@ -14,12 +14,12 @@ const Welcome = () => {
   const navigation = useNavigation();
 
   return (
-    <ScreenWrapper bg='white'>
+    <ScreenWrapper bg={['#4d726c', '#f5f8f7']} start={{x: 0, y: 0}} end={{x: 1, y: 1}}>
       <StatusBar style='dark' />
       <View style={styles.container}>
 
         {/* welcome Image */}
-        <Image source={require('../assets/welcome1.png')} style={styles.welcomeImg} />
+        <Image source={require('../assets/wel.png')} style={styles.welcomeImg} />
        {/*  <Text style={styles.title}>Welcome Screen</Text>
         <Button title="Back to Main" onPress={() => navigation.goBack()} /> */}
         <View style={{gap:20}}>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
  /*  safeArea: { flex: 1, backgroundColor: 'white' ,paddingHorizontal:wp(5)}, */
   container: { flex: 1,backgroundColor:'white', alignItems: 'center',paddingHorizontal:wp(4),justifyContent:'space-around' },
   title: { fontSize: 45, /* marginBottom: 10 , */textAlign:'center',fontWeight:theme.fonts.bold },
-  welcomeImg: { width: wp(100), height: hp(40) /* ,marginBottom:hp(5) */},
+  welcomeImg: { width: wp(100), height: hp(40) /* ,marginBottom:hp(5) */,marginTop:'0'},
   punchline: { fontSize: 18,/* marginBottom: hp(5) , */ textAlign: 'center',paddingHorizontal:wp(5) },
   footer: { width: '100%', paddingHorizontal: 20/*  marginBottom: hp(2) */ },
 });

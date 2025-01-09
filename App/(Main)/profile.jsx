@@ -52,7 +52,7 @@ const Profile = () => {
         setAuth(null);
         navigation.navigate('welcome');
  */
-        Alert.alert('Confirm','Are you sure!',[
+        Alert.alert('Logout','Are you sure!',[
             {
                 text:'no',
                 onPress:()=>console.log('no'),

@@ -46,12 +46,12 @@ export default function App() {
           <Stack.Screen name="profile" component={Profile} />
           <Stack.Screen name="editProfile" component={EditProfile} />
           <Stack.Screen name="notificationItem" component={NotificationItem} />
-          <Stack.Screen name="PostDetails" component={PostDetails}
+          <Stack.Screen name="PostDetails" component={PostDetails}/* 
           
            
            options={{
              presentation: 'modal', // Makes it a modal
-           }} />
+           }} */ />
 
         </Stack.Navigator>
         
