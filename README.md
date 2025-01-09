@@ -51,6 +51,33 @@ Follow these steps to run Threadify on your local machine:
    ```bash
    npm start
 ---
+## Other dependencies
+1. **React Navigation**:
+   ```bash
+   npm install @react-navigation/native-stack
+   npm install @react-navigation/native @react-navigation/stack react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated react-native-get-random-values
+2. **Expo Image**:
+   ```bash
+   npx expo install expo-image
+3. **React Native Pell Rich Editor**:
+   ```bash
+   npm i react-native-pell-rich-editor
+   npx patch-package react-native-pell-rich-editor
+
+4. **Expo Image Picker**:
+   ```bash
+   npx expo install expo-image-picker
+   
+5. **Expo File System**:
+   ```bash
+   npx expo install expo-file-system
+6. **Expo AV**:
+   ```bash
+   npx expo install expo-av
+7. **React Native Render HTML**:
+   ```bash
+   npm i react-native-render-html
+---
 
 ## Contribution Guidelines
 
@@ -74,3 +101,4 @@ We welcome contributions to Threadify! To contribute.
 ---
 ## Future Addition
  - **Expanded Authentication**:Google, Facebook, and Twitter integration
+ - **Story Section**
