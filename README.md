@@ -26,10 +26,8 @@ Threadify is a feature-rich social media application designed for seamless conne
 - **PostgreSQL**: For reliable and structured data storage.
 
 ### Tools & Libraries
-- **Axios**: For handling API requests.
 - **Moment.js**: For formatting dates and times.
 - **React Navigation**: For seamless app navigation.
-- **Lottie**: For implementing animations.
 - **Other Libraries**: Icons, UI components, and utilities.
 
 ---
