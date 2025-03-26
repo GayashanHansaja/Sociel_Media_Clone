@@ -23,7 +23,6 @@ Threadify is a feature-rich social media application designed for seamless conne
 
 ### Backend
 - **Supabase**: As the backend as a service, handling database and authentication.
-- **PostgreSQL**: For reliable and structured data storage.
 
 ### Tools & Libraries
 - **Moment.js**: For formatting dates and times.
